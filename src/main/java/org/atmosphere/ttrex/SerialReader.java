@@ -43,16 +43,44 @@ public class SerialReader implements Runnable {
 		//read from socket 
 		while (true) {
             try {
-            	Thread.sleep(3000);
+            	//in the test mode we define 3 runners
+            	//they are all moving at different speeds
+            	int runnerOne = 0;
+            	int runnerTwo = 0;
+            	int runnerThree = 0;
+            	
             	for (int i=0; i<300; i++){
+            		Thread.sleep(3000);
             		//for testing we will send and update for 3 runners
             		ArrayList runnerFrame = new ArrayList(); 
             		
             		runnerFrame.add("runnerFrame"); //FrameType
             		runnerFrame.add(0); //ID
-            		runnerFrame.add(0.22); //Position
-                	
+            		runnerFrame.add(runnerOne); //Position
+            		
             		readQueue.add(runnerFrame);
+            		
+            		runnerFrame.clear(); 
+            		
+            		runnerFrame.add("runnerFrame"); //FrameType
+            		runnerFrame.add(1); //ID
+            		runnerFrame.add(runnerTwo); //Position
+            		
+            		readQueue.add(runnerFrame);
+            		
+            		runnerFrame.clear(); 
+            		
+            		runnerFrame.add("runnerFrame"); //FrameType
+            		runnerFrame.add(2); //ID
+            		runnerFrame.add(runnerThree); //Position
+            		
+            		readQueue.add(runnerFrame);
+            		
+            		runnerOne = (runnerOne%1000) + 10;
+            		runnerTwo = (runnerTwo%1000) + 12;
+            		runnerThree = (runnerThree%1000) + 15;
+        
+            		
             		
             		//ArrayList infoFrame = new ArrayList(); 
             		
