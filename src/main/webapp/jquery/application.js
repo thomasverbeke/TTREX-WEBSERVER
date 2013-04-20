@@ -75,7 +75,22 @@ $(function () {
         var message = response.responseBody;
         try {
             var json = jQuery.parseJSON(message);
-            console.log(json);
+            
+            switch (json.type){
+            	case "runnerFrame":
+            			console.log("id: "+json.data[1]+" position:"+json.data[2]);
+            		break;
+            	
+            	case "infoFrame":
+            		console.log("frame not recognised");
+            		break;
+            		
+            	default:
+            		console.log("frame not recognised");
+            		break;
+            	
+            }
+            
             //console.log("Frame : "+json.type + " " +json.value); 
            
         } catch (e) {

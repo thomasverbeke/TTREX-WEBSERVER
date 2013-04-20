@@ -45,40 +45,40 @@ public class SerialReader implements Runnable {
             try {
             	//in the test mode we define 3 runners
             	//they are all moving at different speeds
-            	int runnerOne = 0;
-            	int runnerTwo = 0;
-            	int runnerThree = 0;
-            	
+            	int one=0, two=0, three=0;
             	for (int i=0; i<300; i++){
+            		
+            		one = (one%1000) + 10;
+            		two = (two%1000) + 12;
+            		three = (three%1000) + 15;
+            		
             		Thread.sleep(3000);
             		//for testing we will send and update for 3 runners
-            		ArrayList runnerFrame = new ArrayList(); 
+            		ArrayList runnerOne = new ArrayList(); 
             		
-            		runnerFrame.add("runnerFrame"); //FrameType
-            		runnerFrame.add(0); //ID
-            		runnerFrame.add(runnerOne); //Position
+            		runnerOne.add("runnerFrame"); //FrameType
+            		runnerOne.add(0); //ID
+            		runnerOne.add(one); //Position
             		
-            		readQueue.add(runnerFrame);
+            		readQueue.add(runnerOne);
             		
-            		runnerFrame.clear(); 
+            		ArrayList runnerTwo = new ArrayList(); 
             		
-            		runnerFrame.add("runnerFrame"); //FrameType
-            		runnerFrame.add(1); //ID
-            		runnerFrame.add(runnerTwo); //Position
+            		runnerTwo.add("runnerFrame"); //FrameType
+            		runnerTwo.add(1); //ID
+            		runnerTwo.add(two); //Position
             		
-            		readQueue.add(runnerFrame);
+            		readQueue.add(runnerTwo);
             		
-            		runnerFrame.clear(); 
+            		ArrayList runnerThree = new ArrayList(); 
             		
-            		runnerFrame.add("runnerFrame"); //FrameType
-            		runnerFrame.add(2); //ID
-            		runnerFrame.add(runnerThree); //Position
+            		runnerThree.add("runnerFrame"); //FrameType
+            		runnerThree.add(2); //ID
+            		runnerThree.add(three); //Position
             		
-            		readQueue.add(runnerFrame);
+            		readQueue.add(runnerThree);
             		
-            		runnerOne = (runnerOne%1000) + 10;
-            		runnerTwo = (runnerTwo%1000) + 12;
-            		runnerThree = (runnerThree%1000) + 15;
+            		
         
             		
             		
