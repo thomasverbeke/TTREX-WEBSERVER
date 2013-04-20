@@ -4,8 +4,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee    http://java.sun.com/xml/ns/j2ee/web-app_2.5.xsd">
 
-    <description>Atmosphere Chat</description>
-    <display-name>Atmosphere Chat</display-name>
+    <description>ttrex</description>
+    <display-name>ttrex</display-name>
     <servlet>
         <description>AtmosphereServlet</description>
         <servlet-name>AtmosphereServlet</servlet-name>
@@ -15,7 +15,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AtmosphereServlet</servlet-name>
-        <url-pattern>/chat/*</url-pattern>
+        <url-pattern>/ttrex/*</url-pattern>
     </servlet-mapping>
      <init-param>
          <param-name>org.atmosphere.cpr.atmosphereHandlerPath</param-name>
@@ -26,10 +26,10 @@
 	    <param-value>org.atmosphere.interceptor.HeartbeatInterceptor</param-value>
 	 </init-param>
 	 <listener>
-	 	<listener-class>org.atmosphere.coptermotion.SerialComInit</listener-class>
+	 	<listener-class>org.atmosphere.ttrex.SerialComInit</listener-class>
 	 </listener>
 	 <listener>
-	 	<listener-class>org.atmosphere.coptermotion.ChatAtmosphereHandler</listener-class>
+	 	<listener-class>org.atmosphere.ttrex.RaceAtmosphereHandler</listener-class>
      </listener>
       	
 </web-app>

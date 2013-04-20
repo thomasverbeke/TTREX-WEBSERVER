@@ -1,265 +1,448 @@
-<!DOCTYPE html>
-
-<script type="text/javascript" src="jquery/jquery-1.7.2.js"></script>
-<script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
-<script type="text/javascript" src="jquery/application.js"></script>
-
-
+<!doctype html>
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <title>MikroKopter Web Test Platform</title>
-
-    <style>
-        * {
-            font-family: tahoma;
-            font-size: 12px;
-            padding: 0px;
-            margin: 0px;
-        }
-
-        p {
-            line-height: 18px;
-        }
-
-        .header, h1 {
-        	width:100%;
-        	height:50px;
-			font-size:30px;
-			margin-left:10px;
-        }
-		
-		#intervalMenu {
-			margin-left:10px;
-			width:90%;
-			position:absolute;
-			background-color:#999;
-		}
-		
-		#OSDData {
-			float:left;
-			margin:10px;	
-		}
-		
-		#THREEDData {
-			float:left;
-			margin:10px;
-			margin-left:50px;
-		}
+<meta charset="UTF-8">
+<title>TTRex Relay Race test</title>
+<style type="text/css" media="screen">
+    canvas, img {
+		border:5px solid black; 
+	}
 	
-		#DebugData{
-			float:left;
-			margin:10px;
-			margin-left:50px;
-		}
+	.runner{
+		position:absolute;
+		background-image:url(runnerIcon3.png);
+		z-index:9999; 
 		
-		button, input {
-			width:100px;
-			margin-left:20px;
-			background-color:#999;
-			border-color:#666;
-		}
-		#realtimeDataMenu {
-			margin-left:10px;
-			position:relative;
-			top:40px;
-			width:90%;
-			min-height:370px;
-			background-color:#CCC;
-		}
-		#sendingCommandMenu {
-			margin-left:10px;
-			position:relative;
-			min-height:50px;
-			top:42px;
-			width:90%;
-			background-color:#CCC;
-			clear:both;
-		}
-		#atmosphereMenu {
-			margin-left:10px;
-			position:relative;
-			top:46px;
-			min-height:40px;
-			width:90%;
-			margin-left:10px;
-			background-color:#999;	
-		}	
-		#OSD_Container {
-			float:left;
-			margin:10px;
-			margin-left:50px;
-		}
-		#Motor_Container {
-			float:left;
-			margin:10px;
-			margin-left:50px;
-		}
-		
-		#atmosphereTitle{
-			float:left;
-			margin:10px;
-			margin-left:50px;
-		}
-		
-		#server_status{
-			float:left;
-			margin:10px;
-			margin-left:100px;
-			color:darkred;
-		}
-		#SendWP {
-			margin:5px;
-			float:left;
-			margin-left:30px;
-		}
-		#ReqWP {
-			margin:5px;
-			margin-left:30px;
-			float:left;
-		}
-		#SerialTest {
-			margin:5px;
-			float:left;
-			margin-left:30px;
-		}		
-		
-		#EngineTest {
-			margin:5px;
-			float:left;
-			margin-left:30px;
-			
-		}
-		#WP_Settings {
-			padding:20px;
-			float:left;
-			margin-left:30px;
-			background-color:#999;	
-			position:absolute;
-			top:600px;
-			
-		}
-		#red {
-			color:red;		
-		}
-		#green {
-			color:green;		
-		}
-		
-		label {
-			display: block;
-		    float: left;
-		    width: 150px;
-		}
+		width:13px;
+		height:20px;
+		cursor:pointer;
+	}
+	#runner	{  
+		  position:relative;
+		  background-image:url(runnerIcon3.png);
+		  z-index:9999; 
 	
-	 </style>
+		  width:13px;
+		  height:20px;
+		  cursor:pointer;
+		  
+	}
+	
+	#container {
+		position:absolute;
+	}
+	#runner_container{
+
+	}
+	#stats_runner{
+		position:absolute;
+	
+		visibility:hidden;
+		height:300px;
+		width:400px;
+		border:1px solid black;	
+	}
+	#track {
+		fill: white;
+		stroke: black;
+		stroke-width: 2px;
+	}
+</style>
 </head>
 <body>
-<div id="header"><h1>MikroKopter Communication Test Page</h1></div>
-<div id="intervalMenu">
-	<div id="OSDData" >
-		OSD Data <input type="text" value="1000" name="OSDInterval"><button onclick="sendcommand('OSDDataInterval',this);">Set Interval</button>
-	</div>
-	<div id="THREEDData">
-		3D Data<input type="text" value="1000" name="3DDataInterval"><button onclick="sendcommand('3DDataInterval',this);">Set Interval</button>
-	</div>
-	<div id="DebugData">
-		Debug Data <input type="text" value="1000" name="DebugDataInterval"><button  onclick="sendcommand('DebugReqInterval',this);">Set Interval</button>
-	</div>
-</div>
-
-<div id="realtimeDataMenu">
-	<div id="OSD_Container">
+	<h1>HTML5 Canvas & SVG using bezier Curves in JavaScript</h1>
+    <p>Use the sliders to change the dimensions of the track</p>
+    <p>Animation button is just an example of what is possible using our API in a incremental loop.I've included it because it's easy for testing the system.</p>
+    	<li>
+    		Scale: <input type="range" min="0" max="150" value="120" onChange="changeScale(this.value)">
+        </li>
+        <li>
+        	lineWidth : <input type="range" min="0" max="20" value="10" onChange="lineWidth(this.value)">
+        </li>
+        <li>
+    		Height: <input type="range" min="0" max="20" value="0" onChange="changeHeight(this.value)">
+        </li>
+        <li>
+    		Width: <input type="range" min="0" max="20" value="0" onChange="changeWidth(this.value)">
+        </li>
+    	<li>
+    		Turning Point:<input type="range" min="0" max="10" value="0" onChange="changeVirtPos(this.value)">
+        </li>
+        <li>
+        	Animate single runner: <input type="button" value="Animate" onClick="animate()">  Multipe runners <input type="button" value="Animate" onClick="animateRunners()"> 
+        </li>
+	
+	<div id="container">
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="400" width="600" >
+	  		<path id="track"></path>
+		</svg>
+		<div id="runner_container">
+    		<div id="runner" onClick="runnerClick()"></div>
+    	</div>
+    </div>
     
-	<h2>OSD</h2>
-    	<div id="OSD0">CurrentPosition: 0 Lat / 0 Lng / 0 Alt</div>
-		<div id="OSD1">TargetPosition: 0 Lat / 0 Lng / 0 Alt</div>
-		<div id="OSD2">HomePosition: 0 Lat / 0 Lng / 0 Alt</div>
-		<div id="OSD3">WPIndex/WPNumber: 0/0</div>
-		<div id="OSD4">StatsInUse: 0</div>
-		<div id="OSD5">Altimeter (air pressure): 0</div>
-        <div id="OSD6">Variometer (climb/sink rate): 0</div>
-        <div id="OSD7">FlyingTime: 0s</div>
-        <div id="OSD8">Battery Voltage: 0V</div> 
-        <div id="OSD9">GroundSpeed: 0cm/s</div>
-        <div id="OSD10">Heading (angle to north): 0°</div>
-        <div id="OSD11">CompassHeading: 0°</div>
-        <div id="OSD12">AngleNick: 0</div>
-        <div id="OSD13">AngleRoll: 0</div>
-        <div id="OSD14">RCQuality: 0</div>
-        <div id="OSD15">OperatingRadius: 0</div>
-        <div id="OSD16">TopSpeed: 0</div>
-        <div id="OSD17">TargetHoldTime: 0</div>
-        <div id="OSD18">SetPointAltitude: 0</div>
-        <div id="OSD19">Current: 0</div>
-        <div id="OSD20">Gas: 0</div>
-        <div id="OSD21">UsedCapacity: 0</div>
-        <div id="OSD22">Version: 0</div>    
-	</div>
-	<div id="THREEDData">
-		<h2>3D Data</h2>
-		<div id="AngleNick">AngleNick: 0</div>
-		<div id="AngleRoll">AngleRoll: 0</div>
-		<div id="CentroidNick">CentroidNick: 0</div>
-		<div id="CentroidRoll">CentroidNick: 0</div>
-		<div id="CentroidYaw">CentroidYaw: 0</div>
-		<div id="Heading">Heading: 0</div>
-	</div>
+
     
-    <div id="Motor_Container">
-		<h2>Motor Data</h2>
-        <div id="Motor0">Motor1: 0</div>
-        <div id="Motor1">Motor2: 0</div>
-        <div id="Motor2">Motor3: 0</div>
-        <div id="Motor3">Motor4: 0</div>
-        <div id="Motor4">Motor5: 0</div>
-        <div id="Motor5">Motor6: 0</div>	
-	</div>
-</div>
-
-<div id="sendingCommandMenu">
-	<div id="SendWP" >
-		Send WP:  <button onclick="sendcommand('sendWP',this);">Send Frame</button><br>
-	</div>
-	<div id="ReqWP" >
-		Request WP: <input type="text" value="0" name="WPIndex"><button onclick="sendcommand('reqWP',this);">Send Frame</button>
-	</div>
-	<div id="SerialTest" >
-		SerialTest: <input type="text" value="66" name="SerialNumber"><button onclick="sendcommand('serialTest',this);">Send Frame</button>
-	</div>
-	<div id="EngineTest" >
-		Engine Test: <input type="text" value="10" name="EngineSpeed"><button onclick="sendcommand('EngineTest',this);">Send Frame</button>
-	</div>
-</div>
-
-<div id=WP_Settings>  
-	<h2 style="margin-left:20px;">WP Settings</h2>    
+    <div id="stats_runner">
+    	<p><b>Runner stats:</b></p>
+    	<p>Fastest Laptime: ?</p>
+        <p>Slowest Laptime: ?</p>
+        <p>Current speed: ?</p>
+        <p>Fastest Laptime: ...</p>
+    </div>
+    
+    <div id="serverLink">
+    
+    </div>
+    
+    <script type="text/javascript" src="jquery/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
+	<script type="text/javascript" src="jquery/application.js"></script>
+    <script>
 	
-		<label>Latitude</label><input type="text" value="510565210" id="WP_Set0"><br>
-		<label>Longitude</label><input  type="text" value="37011801" id="WP_Set1"><br>
-		<label>Altitude</label><input  type="text" value="250" id="WP_Set2"><br>
-		<label>Status</label><input  type="text" value="1" id="WP_Set3"><br>
-		<label>Heading</label><input  type="text" value="0" id="WP_Set4"><br>
-		<label>ToleranceRadius</label><input  type="text" value="0" id="WP_Set5"><br>
-		<label>HoldTime</label><input  type="text" value="2" id="WP_Set6"><br>
-		<label>Event_Flag</label><input  type="text" value="0" id="WP_Set7"><br>
-		<label>Index</label><input  type="text" value="1" id="WP_Set8"><br>
-		<label>Type</label><input  type="text" value="0" id="WP_Set9"><br>
-		<label>WP_EventChanneldata</label><input  type="text" value="100" id="WP_Set10"><br>
-		<label>AltitudeRate</label><input  type="text" value="30" id="WP_Set11"><br>
-		<label>Speed</label><input  type="text" value="30" id="WP_Set12"><br>
-		<label>CamAngle</label><input  type="text" value="0" id="WP_Set13"><br>
-		<label>Name</label><input  type="text" value="0" id="WP_Set14">
+		//init var
+		var scaleFactor = 120;
+		var height = 0;
+		var width = 0;
+		var lineWidthVal = 10;
+		var A,B,C,D,E,F,G,H;
+		var x=400, y=100;
+		var animatePercentage = 0;
+		var runnerObj;
+		var val=0;
+		var turningP = 0;
+		var xOffset=0;
+		var yOffset=0;
+		var amountOfRunners = 4; //set amount of runners
+		var progress = new Array();
+		var stop = 0;
+		var _backup;
+		
+		/** LIBRARY CODE **/
+		/** 	
+		  		Generate a SVG path to take advantage of the getPointAtLength and getTotalLength prototype functions
+		 		We than use a callback function which contains the coordinates of the point at a given % of the track.
+				It would be a lot more difficult to find the coordinates of the points on a bezier curve using canvas.
+		 
+		 		TODO: 
+		 		-Connect both path's and make them dynamic or configurable
+				-Update position graphic	
+				-Write a complete animation using requestAnimationFrame DONE
+		 
+		 **/
+		 
+		function SVGCurve(path){
+			//create an SVG element based on the given path
+			this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			this.path.setAttribute('d', path);	
+			
+		}
 	
-</div>
+		SVGCurve.prototype = {
+			pointAtPercent : function(percent,callback){
+				var totalLength = this.path.getTotalLength();
+				var point = this.path.getPointAtLength(totalLength * percent )
+				callback(point);	
+			}
+		};
+		
+		/** IMPLEMENTATION CODE**/
+		
+		/////*****MULTIPLE RUNNERS
+		//initialise the runners
+		function initRunners(){
+			builtCoord();
+			for (var i=0; i<amountOfRunners; i++){
+			
+				var startPos = {
+					top:365,
+					left:479
+				};
+			
+				var container = document.getElementById("runner_container");
+				var newRunner = document.createElement('div');
+				newRunner.id ="runner"+i; //only for unique features of the runner Example: for changing it's top & left values
+				newRunner.className = "runner"; //here we will define what runners got in common
+				newRunner.style.top = startPos.top;
+				newRunner.style.left = startPos.left;
+				container.appendChild(newRunner); //add runner to the container
+				
+				//create runner object at start position 
+				//TODO add other information to runner object
+				var runner = {
+					id :i,
+					lastPos : startPos, //TODO update this (is it needed?)
+					percentage : 0+i*10, //TODO let the startpos vary for a better effect
+					SVGpath : runnerObj,
+					_backup : runnerObj,
+					level : 0
+				};
 	
-<div id="atmosphereMenu">
-	<div id="atmosphereTitle">Server Status:</div>
-	<div id="serverLink">Offline</div>
-    <div id="server_status">Offline</div>
-</div>
-
-
+				progress.push(runner); //add runner object to array
+			}
+			
+		}
+		
+		initRunners();
+	
+		
+		//animate all runners
+		function animateRunners(){  			
+			
+			//loop trough our initialized runners		
+			for (var i=0; i<progress.length; i++){	
+				var collision=false;			
+				//get last position
+				var id = "runner"+progress[i].id;
+				var percentage = progress[i].percentage;
+				var backup = progress[i].SVGpath;
+				var level = progress[i].level;
+				
+				
+								
+				//collistion detection (smallest cpu-footprint is probably on % check
+				for (var j=0; j<progress.length; j++){
+					if (Math.abs(percentage - progress[j].percentage) < 100  && i!=j && j>i){
+						//console.log("colision detected");
+						//when there is a collision depending on the number of collisions in this cycle
+									
+						if (progress[i].level==0){
+							//console.log("promoting");
+							collision=true;
+							var factor = 10;
+							
+							A = { x: 1*scaleFactor, y: 1*scaleFactor };
+							B = { x: (4+width)*scaleFactor, y: 1*scaleFactor };
+							C = { x: 1*scaleFactor, y: (2+height)*scaleFactor };
+							D = { x: (4+width)*scaleFactor, y: (2+height)*scaleFactor };			
+							E = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (1)*scaleFactor };	
+							F = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (2+height)*scaleFactor };
+							G = { x: (0-parseInt(turningP)), y: 1*scaleFactor };
+							H = { x: (0-parseInt(turningP)), y: (2+height)*scaleFactor };
+			
+							A.x -=factor;
+							A.y -=factor;
+							B.x +=factor;
+							B.y -=factor;
+							C.x -=factor;
+							C.y +=factor;
+							D.x +=factor;
+							D.y +=factor;
+							E.x +=factor;
+							E.y -=factor;
+							F.x +=factor;
+							F.y +=factor;
+							G.x -=factor;
+							G.y -=factor;
+							H.x -=factor;
+							H.y +=factor;
+							
+							//do we have to restore?
+							var SVGPath = 	"M"+B.x+" "+B.y+
+							"C"+E.x+" "+E.y+ ","+F.x+" "+F.y+ ","+D.x+" "+D.y + 
+							"M"+D.x+" "+D.y +"L" + C.x + " "+ C.y + 
+							"C"+ H.x+ " "+ H.y+ " "+ G.x+" "+G.y+" "+A.x+" "+ A.y+
+							"L"+B.x+ " "+B.y;
+							
+							progress[i].SVGpath = new SVGCurve(SVGPath);
+							progress[i].level++;
+						}
+					}
+					
+					//fourth cylce and no collision
+					else if (j==progress.length-1 && collision==false &&progress[i].level!=0){
+						progress[i].SVGpath = progress[i]._backup;
+						progress[i].level = 0;
+						//console.log("demoting");
+					}
+				}
+				
+				
+				var runner = progress[i].SVGpath;
+				runner.pointAtPercent(percentage/5000,function(point){
+					//console.log(point); //debug
+					var id = "runner"+i;
+					document.getElementById(id).style.top = (point.y-13)+"px"; //get correct item and change position
+					document.getElementById(id).style.left = (point.x-10)+"px";
+				});
+				
+			
+				progress[i].percentage = progress[i].percentage+1+2*progress[i].id;
+			
+				if (progress[i].percentage > 4999 ){
+					progress[i].percentage =0;
+				}
+					
+				//progress[i].percentage++; 			
+				
+			}
+			
+		
+			
+			requestAnimFrame(function() {	
+				animateRunners();		
+			});	
+		}
+		
+		
+		
+		////**** SINGLE RUNNER
+		
+		//built up the coordinates & boundaries
+		//TODO refactor to a better name
+		function builtCoord(){
+			//built up 6 coord in space
+			// G	A	B	E
+			// H	C	D	F
+			
+			A = { x: 1*scaleFactor, y: 1*scaleFactor };
+			B = { x: (4+width)*scaleFactor, y: 1*scaleFactor };
+			C = { x: 1*scaleFactor, y: (2+height)*scaleFactor };
+			D = { x: (4+width)*scaleFactor, y: (2+height)*scaleFactor };			
+			E = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (1)*scaleFactor };	
+			F = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (2+height)*scaleFactor };
+			G = { x: (0-parseInt(turningP)), y: 1*scaleFactor };
+			H = { x: (0-parseInt(turningP)), y: (2+height)*scaleFactor };
+			
+			//track path
+			var SVGPath = 	"M"+B.x+" "+B.y+
+						"C"+E.x+" "+E.y+ ","+F.x+" "+F.y+ ","+D.x+" "+D.y + 
+						"M"+D.x+" "+D.y +"L" + C.x + " "+ C.y + 
+						"C"+ H.x+ " "+ H.y+ " "+ G.x+" "+G.y+" "+A.x+" "+ A.y+
+						"L"+B.x+ " "+B.y;
+						
+			console.log("Generated SVG Path: "+SVGPath); //print to console
+			
+			//var SVGPath = "M400 100C 500 100, 500 200, 400 200 M400 200 L100 200 C0 200 0 100 100 100 M100 100 L400 100";
+			runnerObj = new SVGCurve(SVGPath);
+			
+			//compose standard drawing
+			
+			document.getElementById("track").setAttribute('d', SVGPath);	
+			
+		}
+	
+	
+		//example for retrieving point at 20% (more points/smoother animation can be optained by using a smaller increment in the animation)
+		//data from server will contain user ID and position in % along the track. Code will translate % to an exact point on the track.
+		//runner.pointAtPercent(0.20,function(point){
+		//	console.log(point);
+		//	document.getElementById("runner").style.top = (point.y+560)+"px";
+		//	document.getElementById("runner").style.left = (point.x)+"px";
+		//});
+		
+		/** 	
+				RequestAnimationFrame: Contains a callback function that's going to be called on a regular basis
+		**/
+		window.requestAnimFrame = (function(callback) {
+			return 	window.requestAnimationFrame || 
+					window.webkitRequestAnimationFrame || 
+					window.mozRequestAnimationFrame || 
+					window.oRequestAnimationFrame || 
+					window.msRequestAnimationFrame ||
+					
+			function(callback) {
+			  window.setTimeout(callback, 1000 / 60);
+			};
+			
+		  })();	
+		  
+		  
+		/** 	
+				Use the requestAnimFrame to look up the coordinate of the next point and show it in console.
+		**/
+		function animate(){  
+			//update position
+			runnerObj.pointAtPercent(animatePercentage/2000,function(point){
+				console.log(point);
+				document.getElementById("runner").style.top = (point.y+245)+"px";
+				document.getElementById("runner").style.left = (point.x)+"px";
+			});
+			animatePercentage++;
+				
+			requestAnimFrame(function() {
+				if (animatePercentage == 2000){
+					//stop + reset
+					animatePercentage = 0;
+				} else {
+					animate();
+				}
+			});	
+		}
+		
+		/** 	
+					Draw the path based on the canvas/SVG. Problem when using both is possible mismatch.
+					OLD CODE
+		**/
+	
+		drawTrack();
+		
+		function clear(){
+			ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);	
+		}
+		function drawTrack(){			
+			// G	A	B	E
+			// H	C	D	F
+			
+			builtCoord();//rebuilt coord		
+			//ctx.lineWidth = lineWidthVal;
+			//ctx.strokeStyle = "#cc430b";
+			//ctx.beginPath();
+			//ctx.moveTo(C.x,C.y); 
+			//ctx.lineTo(D.x,D.y);
+			//ctx.bezierCurveTo(F.x, F.y, E.x, E.y, B.x, B.y); 
+			//ctx.lineTo(A.x, A.y); 
+			//ctx.moveTo(A.x, A.y); 
+			//ctx.bezierCurveTo(G.x,G.y, H.x ,H.y , C.x,C.y);
+			
+			//ctx.stroke() //draw			
+		}
+			
+		function changeScale(value){
+			clear();
+			scaleFactor=value;
+			drawTrack();
+		}
+		
+		function changeHeight(value){
+			clear();
+			height = value/10;
+			drawTrack();
+		}
+		
+		function changeWidth(value){
+			clear();
+			width = value/10;
+			drawTrack();
+		}
+		
+		function changeVirtPos(value){
+			clear();
+			turningP = value;
+			drawTrack();
+		}
+		
+		function lineWidth(value){
+			lineWidthVal = value;
+			clear();
+			drawTrack();		
+		}
+		
+		function runnerClick(){
+			console.log("runner clicked");
+			if (val==0){
+				document.getElementById("stats_runner").style.visibility = "visible";
+				val=1;
+			} else {
+				document.getElementById("stats_runner").style.visibility = "hidden";
+				val=0;
+	
+			}
+			
+		}
+		
+		
+				
+	</script>
 </body>
 </html>

@@ -6,13 +6,18 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="src/main/webapp/WEB-INF/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="src/main/webapp/WEB-INF/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -23,8 +28,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/thomasverbeke/Sites/Coptermotion/jetty/lib/servlet-api-3.0.jar"/>
-	<classpathentry kind="lib" path="/Users/thomasverbeke/Sites/Coptermotion/CommunicationDemo/Communication/lib/javaxcomm/comm.jar"/>
-	<classpathentry kind="lib" path="/Users/thomasverbeke/Sites/Coptermotion/CommunicationDemo/Communication/lib/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="/Users/thomasverbeke/Eclipse/Maven2/relayrace/lib/servlet-api-3.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
