@@ -1,14 +1,12 @@
 /** 
  * @author Thomas Verbeke
  * 
- * This class reads and decodes the frames it reads on the given serial port.
- * It puts the contents in a BloackingQueue which is send to the front-end.
+ * Read frames from socket (rasp-pi); decode & send them in an agreed format known to the web client.
  * 
- * TODO DataStorage class needs to be removed in the long term; maybe keep it for testing only but develop own solution.
- * **/
-
-
-//TODO Move decoding to another function; write a test class for it; encode data; 
+ * Also provides a test mode (send continous positions for runners moving at different speeds which can be used 
+ * for testing the webclient.
+ * 
+ **/
 
 package org.atmosphere.ttrex;
 import java.io.IOException;
@@ -19,15 +17,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.ServletContextEvent;
-import gnu.io.*;
-//import javax.comm.*; Doesn't work with javax.com
-
+import gnu.io.*; //don't need this anymore
 
 public class SerialReader implements Runnable {
 	
 
 	Thread readThread;
-	//static boolean outputBufferEmptyFlag = false;
 
 	private BlockingQueue<ArrayList> readQueue = new LinkedBlockingQueue<ArrayList>();
 	ArrayList<String> list = new ArrayList<String>();
