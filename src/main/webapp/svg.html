@@ -1,0 +1,115 @@
+<script src="http://code.jquery.com/jquery-latest.min.js">  
+</script>
+<div id="button"></div>
+<button onclick='start()'>animate</button>
+<button onclick='start(true)'>animate reverse path</button>
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <path d="M 400 100 C 500 100, 500 200, 400 200 M400 200 L100 200 C 0 200 0 100 100 100 M 100 100 L 400 100" stroke="black" fill="transparent"/>
+</svg>
+
+
+<style type="text/css" media="screen">
+    div	{  
+		  position:absolute; 
+		  z-index:1; 
+		  top:400px; 
+		  left:600px; 
+		  width:20px;
+		  height:20px; 
+		  border-radius:10px; 
+		  background:blue; 
+		  margin-top:-300px;
+	}
+</style>
+<script>
+
+
+	function CurveAnimator(path){
+		this.path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+		this.path.setAttribute('d', path);
+		this.updatePath();
+		this.lastCreated = this;
+	}
+	
+	CurveAnimator.prototype = {
+		timer : null,
+		animate : function( duration, callback, delay, reverse ){
+			var that = this;
+	
+			delay = delay || 0;
+			// TODO: Use requestAnimationFrame if a delay isn't passed
+			this.stop();
+			
+			var startTime = new Date();
+	
+			function calc(){
+				var now = new Date(),
+					elapsed = (now-startTime)/1000,
+					percent = reverse ? 1 - elapsed/duration : elapsed/duration;
+					//if reverse is true other way around
+				if( percent >= 1 || percent <= 0 )
+					return that.stop();
+	
+				var p1 = that.pointAt( percent - 0.01 ),
+					p2 = that.pointAt( percent + 0.01 );
+					
+				//var angle = Math.atan2(p2.y-p1.y,p2.x-p1.x)*180 / Math.PI;
+				callback( that.pointAt(percent) );
+				CurveAnimator.prototype.timer = setTimeout( calc, delay );
+			}
+			
+			setTimeout( calc, delay );
+		},
+		stop : function(){
+			return clearTimeout( CurveAnimator.prototype.timer );
+		},
+		pointAt : function(percent){
+			return this.path.getPointAtLength( this.len * percent );
+		},
+		updatePath : function(){
+			this.len = this.path.getTotalLength();
+		},
+		setStart : function(x,y){
+			var M = this.path.pathSegList.getItem(0);
+			M.x = x; M.y = y;
+			this.updatePath();
+			return this;
+		},
+		setEnd : function(x,y){
+			var C = this.path.pathSegList.getItem(1);
+			C.x = x; C.y = y;
+			this.updatePath();
+			return this;
+		},
+		setStartDirection : function(x,y){
+			var C = this.path.pathSegList.getItem(1);
+			C.x1 = x; C.y1 = y;
+			this.updatePath();
+			return this;
+		},
+		setEndDirection : function(x,y){
+			var C = this.path.pathSegList.getItem(1);
+			C.x2 = x; C.y2 = y;
+			this.updatePath();
+			return this;
+		}
+	};
+	
+	/*-- INIT THE ANIMATION (using jQuery) ---*/
+	var walkerCSS = $('div')[0].style;
+	var scale = 10;
+
+	var path = "M400 100 C 500 100, 500 200, 400 200 M400 200 L100 200 C 0 200 0 100 100 100 M 100 100 L 400 100";
+	
+	
+	function start(reverse){
+		var curve = new CurveAnimator( path );
+		//duration, callback, delay, reverse	
+		curve.animate(10, function(point){
+			 walkerCSS.cssText = "top:"+(310+point.y) +"px; left:"+point.x +"px";
+		},0,reverse);
+	}
+
+
+</script>
