@@ -118,6 +118,8 @@
 		var stop = 0;
 		var _backup;
 		
+		var runnerList = new Array();
+		
 		/** LIBRARY CODE **/
 		/** 	
 		  		Generate a SVG path to take advantage of the getPointAtLength and getTotalLength prototype functions
@@ -145,6 +147,78 @@
 				callback(point);	
 			}
 		};
+		
+		//override the indexOf Prototype (because of our array structure + not implemented in all browsers)
+		Array.prototype.indexOf = function (obj, fromIndex) {
+	        if (fromIndex == null) {
+	            fromIndex = 0;
+	        } else if (fromIndex < 0) {
+	            fromIndex = Math.max(0, this.length + fromIndex);
+	        }
+	        for (var i = fromIndex, j = this.length; i < j; i++) {
+	            if (this[i].id === obj)
+	                return i;
+	        }
+	        return -1;
+	    };
+		
+		
+		function setRunner(id, position){
+			//does runner exist?
+			if (runnerList.indexOf(id) > -1){
+				//does exist > update position
+				var pos = runnerList.indexOf(id);
+				var runner = runnerList[pos];
+				
+				runner.percentage = position;
+				
+				
+				runner.SVGpath.pointAtPercent(runner.percentage/10,function(point){
+					console.log("position for runner: "+id+" updated to "+point.y + " "+point.x +"("+ runner.percentage +"%)"); //debug
+					var _id = "runner"+id;
+					document.getElementById(_id).style.top = (point.y-13)+"px"; //get correct item and change position
+					document.getElementById(_id).style.left = (point.x-10)+"px";
+				});
+				
+				
+			} else {
+				
+				//change the startPos for better runnerIcon position
+				var startPos = {
+					top:365,
+					left:479
+				};
+				
+				//should be dynamic
+				var SVGPath = "M480 120C600 120,600 240,480 240M480 240L120 240C0 240 0 120 120 120L480 120";
+				var curve = new SVGCurve(SVGPath);
+			
+				var container = document.getElementById("runner_container");
+				var newRunner = document.createElement('div');
+				newRunner.id ="runner"+id; //only for unique features of the runner Example: for changing it's top & left values
+				newRunner.className = "runner"; //here we will define what runners got in common
+				newRunner.style.top = startPos.top;
+				newRunner.style.left = startPos.left;
+				container.appendChild(newRunner); //add runner to the container
+					
+				run = new myRunner(id,position,curve);
+				runnerList.push(run);
+				
+			}
+	
+		}
+		
+		function myRunner(id, percentage,curve){
+			this.id = id;
+			this.percentage = percentage;	
+			this.lastPos = null;
+			this.SVGpath = curve;
+			this.backup_SVGpath = curve;
+			this.level = 0;
+		}
+		
+		
+	
 		
 		/** IMPLEMENTATION CODE**/
 		

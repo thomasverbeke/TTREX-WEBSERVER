@@ -52,7 +52,7 @@ public class SerialReader implements Runnable {
             		two = (two%1000) + 12;
             		three = (three%1000) + 15;
             		
-            		Thread.sleep(3000);
+            		Thread.sleep(1000);
             		//for testing we will send and update for 3 runners
             		ArrayList runnerOne = new ArrayList(); 
             		

@@ -73,19 +73,20 @@ $(function () {
     	//TODO multithread onMessage using webworkers
         //callback when a new frame has arrived
         var message = response.responseBody;
+        console.log("new frame arrived");
         try {
             var json = jQuery.parseJSON(message);
             
             switch (json.type){
             	case "runnerFrame":
-            			console.log("id: "+json.data[1]+" position:"+json.data[2]);
+            			//console.log("runner ID: "+json.data[1]+" position (%):"+json.data[2]/100);
+            			//update position of the runner
+            			//if runner does not exist => add runner
+            			setRunner(json.data[1],json.data[2]/100);
+            			
             		break;
             	
             	case "infoFrame":
-            		console.log("frame not recognised");
-            		break;
-            		
-            	default:
             		console.log("frame not recognised");
             		break;
             	
@@ -94,7 +95,7 @@ $(function () {
             //console.log("Frame : "+json.type + " " +json.value); 
            
         } catch (e) {
-            console.log('This doesn\'t look like a valid JSON: ', message.data);
+            console.log('This doesn\'t look like a valid JSON: ', message);
             return;
         }
     };
