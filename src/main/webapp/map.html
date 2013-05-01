@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="US-ASCII">
+<title>Google Map</title>
+</head>
+<style type="text/css">
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0; font:10px Verdana; color:#FFF; }
+ 
+#wrapper {
+position:relative;
+height:100%;
+width:100%;
+}
+
+#map_canvas {
+height: 100%;
+width: 100%;
+float:left;
+min-height:100%;
+}
+
+#menu {
+width:200px;
+height:400px;
+position:absolute;
+right:0;
+top:300px;
+background-color:gray;
+opacity:0.8;
+filter:alpha(opacity=80);
+padding:10px;
+}
+</style>
+
+<body onload="initialize()">
+<div id="wrapper">
+  	<div id="map_canvas"></div>
+</div>
+
+<div id="menu">
+	<p>SETTINGS</p>
+	<input id="circleRadius" value="20" onchange="circleChange(this)">circle radius</input>
+
+	<button onclick="renderWP()">EXPORT</button>
+	<button onclick="clearWP()">CLEAR</button>
+</div>
+
+</body>
+</html>
+<script type="text/javascript"
+  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDbYw3BJL2Qp-GFS04fHAc_CYBaS59ks8A&sensor=false&libraries=drawing,geometry">
+</script>
+
+<script type="text/javascript">
+
+var markersArray = new Array();
+var wpArray = new Array();
+var circleArray = new Array();
+var poly;
+var map;
+var path;
+var circleRadius = 20;
+
+function circleChange(value){
+	circleRadius = parseInt(value.value);
+	
+}
+
+function renderWP(){
+	console.log(wpArray);
+}
+
+function drawWP(importList){
+	for (var i=0; i<importList.length; i++){
+		path = poly.getPath();
+		var latlng = new google.maps.LatLng(importList[i].Latitude,importList[i].Longitude);
+	
+		path.push(latlng);
+	
+		// Add a new marker at the new plotted point on the polyline.
+		var marker = new google.maps.Marker({
+			position: latlng,
+			title: '#' + path.getLength(),
+			map: map,
+			dragable: false,
+			clickable: true,
+			name: name,
+			raiseOnDrag: false,
+			//icon: icon,
+			setZIndex: 20
+		});
+		
+		markersArray.push(marker);
+		wpArray.push(importList[i]);	
+		
+	}
+	
+}
+
+function clearWP(){
+	
+	for (var i=0; i<markersArray.length; i++){
+		markersArray[i].setMap(null);
+	}
+	
+	for (var i=0; i<circleArray.length; i++){
+		circleArray[i].setMap(null);
+	}
+	
+	
+	
+	path.clear();
+	
+	if (poly != "undefined"){
+		poly.setMap(null);
+	}
+	markersArray = [];
+	wpArray = [];
+}
+
+function initialize() {
+	coord = new google.maps.LatLng(50.86833074492983,4.690893888473511);
+				mapOptions = { 
+					zoom: 19, 
+					center: coord , 
+					panControl: true,
+					panControlOptions: {
+					  position: google.maps.ControlPosition.LEFT_CENTER
+					},
+					zoomControl: true,
+					zoomControlOptions: {
+					  style: google.maps.ZoomControlStyle.LARGE,
+					  position: google.maps.ControlPosition.LEFT_CENTER
+					},
+					mapTypeControl: true,
+					mapTypeControlOptions: {
+						position: google.maps.ControlPosition.RIGHT_BOTTOM},
+					scaleControl: false,
+					streetViewControl: true,
+					streetViewControlOptions: {position: google.maps.ControlPosition.RIGHT_TOP},
+					overviewMapControl: false,	
+					mapTypeId: google.maps.MapTypeId.SATELLITE
+				};
+				map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+				
+				
+				var polyOptions = {
+					fillColor:"#1E90FF",
+					strokeColor:"#1E90FF",
+					editable:true,
+					icons:[{
+						icon: {
+							path:google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+						},
+						repeat:'200px',
+					}]
+				}
+				
+				poly = new google.maps.Polyline(polyOptions);
+				poly.setMap(map);
+
+				google.maps.event.addListener(map, 'click', addLatLng);
+				path = poly.getPath();
+				
+				 
+				function addLatLng(event) {
+				
+					//var icon ='markerIcons/largeTDRedIcons/marker'+markersArray.length+'.png';
+					path = poly.getPath();
+					
+					// Because path is an MVCArray, we can simply append a new coordinate
+					// and it will automatically appear
+					path.push(event.latLng);
+				
+					// Add a new marker at the new plotted point on the polyline.
+					var marker = new google.maps.Marker({
+						position: event.latLng,
+						title: '#' + path.getLength(),
+						map: map,
+						dragable: false,
+						clickable: true,
+						name: name,
+						raiseOnDrag: false,
+						//icon: icon,
+						setZIndex: 20
+					});
+					
+					//console.log(event.latLng);
+				
+					markersArray.push(marker);
+				
+					//fill the wp with standard values
+					var wp = ({
+						"Latitude" : event.latLng.lat(),
+						"Longitude" : event.latLng.lng(),	
+					});
+					
+					//draw a circle arround
+					var circle = new google.maps.Circle({
+				        center: event.latLng,
+				        radius: circleRadius,
+				        strokeColor: "#FF0000",
+				        strokeOpacity: 0.8,
+				        strokeWeight: 2,
+				        fillColor: "#FF0000",
+				        fillOpacity: 0.35,
+				        map: map,
+				        clickable:false
+				    });
+					
+					circleArray.push(circle);
+					
+	            	
+					wpArray.push(wp);			
+				}
+				
+}
+</script>		
