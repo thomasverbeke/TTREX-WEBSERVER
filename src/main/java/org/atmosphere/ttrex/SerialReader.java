@@ -1,4 +1,5 @@
 /** 
+
  * @author Thomas Verbeke
  * 
  * Read frames from socket (rasp-pi); decode & send them in an agreed format known to the web client.
@@ -45,8 +46,6 @@ public class SerialReader implements Runnable {
 		event.getServletContext().setAttribute("readQueue", readQueue);	//add queue to the context	
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
 		
-		
-		//we use readers and writers so we can write Unicode characters over the sockets
 		try {
 			System.out.println("Inside serialReader opening socket");
 			raspSocket = new Socket("25.149.89.217",5999); //IP , port number
@@ -68,16 +67,25 @@ public class SerialReader implements Runnable {
 		while (true) {
   
 			try {
-				TrackEvent object = (TrackEvent) str.readObject();
-				System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
-			
-				ArrayList runnerOne = new ArrayList(); 
-    		
-        		runnerOne.add("runnerFrame"); //FrameType
-        		runnerOne.add(object.getRunnerId()); //ID
-        		runnerOne.add(object.getPercentage()); //Position
-        		
-        		readQueue.add(runnerOne);
+				if (raspSocket.isConnected()){
+				
+					TrackEvent object = (TrackEvent) str.readObject();
+					System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
+				
+					ArrayList runnerOne = new ArrayList(); 
+	    		
+	        		runnerOne.add("runnerFrame"); //FrameType
+	        		runnerOne.add(object.getRunnerId()); //ID
+	        		runnerOne.add(object.getPercentage()); //Position
+	        		
+	        		readQueue.add(runnerOne);
+				} else if (raspSocket.isClosed()){
+					System.out.println("Socket closed");
+					System.exit(1);
+				} else {
+					System.out.println("Socket closed!");
+					System.exit(1);
+				}
 			} catch(Exception e){
 	
 				System.out.println(e.getMessage());
