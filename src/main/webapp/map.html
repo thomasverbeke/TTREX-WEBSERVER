@@ -49,6 +49,10 @@ padding:10px;
 
 </body>
 </html>
+<script type="text/javascript" src="jquery/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="jquery/jquery.atmosphere.js"></script>
+<script type="text/javascript" src="jquery/application.js"></script>
+	
 <script type="text/javascript"
   src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDbYw3BJL2Qp-GFS04fHAc_CYBaS59ks8A&sensor=false&libraries=drawing,geometry">
 </script>
@@ -70,6 +74,7 @@ function circleChange(value){
 
 function renderWP(){
 	console.log(wpArray);
+	subSocket.push(jQuery.stringifyJSON({ type: "wpArray", data: wpArray, source:"client" }));
 }
 
 function drawWP(importList){
