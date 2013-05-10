@@ -23,6 +23,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.ServletContextEvent;
 
+import org.atmosphere.ttrex.SerialWriter;
+
 import be.ttrax.raspi.frames.TrackEvent;
 
 import java.net.*;
@@ -37,6 +39,7 @@ public class SerialReader implements Runnable {
 	BlockingQueue<ArrayList> writeQueue = new LinkedBlockingQueue<ArrayList>();
 	ObjectInputStream str;
 	Socket raspSocket;
+	ObjectOutputStream strOut;
 	
 	public SerialReader(ServletContextEvent event) throws Exception {
 		ArrayList init = new ArrayList(); 
@@ -50,6 +53,14 @@ public class SerialReader implements Runnable {
 			System.out.print("Connecting...");
 			raspSocket = new Socket("25.149.89.217",5999); //IP , port number
 			str = new ObjectInputStream(raspSocket.getInputStream());
+			strOut = new ObjectOutputStream(raspSocket.getOutputStream());
+			
+			strOut.writeObject("TEST");
+			strOut.flush();
+			
+			 Thread thread = new Thread(new SerialWriter(event,strOut));
+     		 thread.start();	
+			
 			System.out.println("OK");
 		} catch (UnknownHostException e) {
 			System.err.println("Host unknown");
@@ -70,18 +81,29 @@ public class SerialReader implements Runnable {
 			try {
 				
 				if (raspSocket.isConnected()){
-									
-					TrackEvent object = (TrackEvent) str.readObject();
+						
+					try {
+						
+						TrackEvent object = (TrackEvent) str.readObject();
 					
-					System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
-				
-					ArrayList runnerOne = new ArrayList(); 
-	    		
-	        		runnerOne.add("runnerFrame"); //FrameType
-	        		runnerOne.add(object.getRunnerId()); //ID
-	        		runnerOne.add(object.getPercentage()); //Position
+						System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
+						
+						ArrayList runnerOne = new ArrayList(); 
+		    		
+		        		runnerOne.add("runnerFrame"); //FrameType
+		        		runnerOne.add(object.getRunnerId()); //ID
+		        		runnerOne.add(object.getPercentage()); //Position
+		        		readQueue.add(runnerOne);
+		        		
+					} catch (EOFException e){
+						System.out.println("Rasp Pi disconnected");
+						System.exit(1);
+					}
+					
+					
+	        		strOut.writeObject("TEST");
+	        		strOut.flush();
 	        		
-	        		readQueue.add(runnerOne);
 				} else if (raspSocket.isClosed()){
 					System.out.println("Socket closed");
 					System.exit(1);
@@ -92,7 +114,7 @@ public class SerialReader implements Runnable {
 			} catch(Exception e){
 	
 				e.printStackTrace();
-			}
+			} 
 				
         }
 	}
