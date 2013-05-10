@@ -55,8 +55,7 @@ public class SerialReader implements Runnable {
 			str = new ObjectInputStream(raspSocket.getInputStream());
 			strOut = new ObjectOutputStream(raspSocket.getOutputStream());
 			
-			strOut.writeObject("TEST");
-			strOut.flush();
+		
 			
 			 Thread thread = new Thread(new SerialWriter(event,strOut));
      		 thread.start();	
@@ -101,8 +100,7 @@ public class SerialReader implements Runnable {
 					}
 					
 					
-	        		strOut.writeObject("TEST");
-	        		strOut.flush();
+	        	
 	        		
 				} else if (raspSocket.isClosed()){
 					System.out.println("Socket closed");

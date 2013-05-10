@@ -56,16 +56,17 @@ public class SerialWriter implements Runnable {
 						    		list.addPosition((double)Longitude ,(double) Latitude);    	
 						    	}
 						    	
-						    	strOut.writeObject(list);
-						    	strOut.flush();
+						    	try {
+						    		strOut.writeObject(list);
+						    		strOut.flush();
+						    	} catch (IOException e){
+						    		e.printStackTrace();
+						    	}
 					    }
 				}
 				
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
