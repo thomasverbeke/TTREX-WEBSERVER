@@ -47,17 +47,18 @@ public class SerialReader implements Runnable {
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
 		
 		try {
-			System.out.println("Inside serialReader opening socket");
+			System.out.print("Connecting...");
 			raspSocket = new Socket("25.149.89.217",5999); //IP , port number
 			str = new ObjectInputStream(raspSocket.getInputStream());
-		
+			System.out.println("OK");
 		} catch (UnknownHostException e) {
 			System.err.println("Host unknown");
-			//System.exit(1);
+			System.out.println(e);
+			System.exit(1);
 		} catch (IOException e) {
 			System.err.println("IO Exception");
-			System.exit(1);
-			
+			System.out.println(e);
+			System.exit(1);		
 		}
 			
 	}
@@ -67,9 +68,11 @@ public class SerialReader implements Runnable {
 		while (true) {
   
 			try {
-				if (raspSocket.isConnected()){
 				
+				if (raspSocket.isConnected()){
+									
 					TrackEvent object = (TrackEvent) str.readObject();
+					
 					System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
 				
 					ArrayList runnerOne = new ArrayList(); 
@@ -88,48 +91,9 @@ public class SerialReader implements Runnable {
 				}
 			} catch(Exception e){
 	
-				System.out.println(e.getMessage());
+				e.printStackTrace();
 			}
 				
-				
-			
-				
-//            		one = (one%1000) + 10;
-//            		two = (two%1000) + 12;
-//            		three = (three%1000) + 15;
-//            		
-//            		Thread.sleep(1500);
-//            		//for testing we will send and update for 3 runners
-//            		ArrayList runnerOne = new ArrayList(); 
-//            		
-//            		runnerOne.add("runnerFrame"); //FrameType
-//            		runnerOne.add(0); //ID
-//            		runnerOne.add(one); //Position
-//            		
-//            		readQueue.add(runnerOne);
-//            		
-//            		ArrayList runnerTwo = new ArrayList(); 
-//            		
-//            		runnerTwo.add("runnerFrame"); //FrameType
-//            		runnerTwo.add(1); //ID
-//            		runnerTwo.add(two); //Position
-//            		
-//            		readQueue.add(runnerTwo);
-//            		
-//            		ArrayList runnerThree = new ArrayList(); 
-//            		
-//            		runnerThree.add("runnerFrame"); //FrameType
-//            		runnerThree.add(2); //ID
-//            		runnerThree.add(three); //Position
-//            		
-//            		readQueue.add(runnerThree);
-//            		
-//            		//ArrayList infoFrame = new ArrayList(); 
-//            		
-//            		//infoFrame.add("infoFrame");
-//            		//infoFrame.add(0);
-//            		//infoFrame.add(0.22);
-			
         }
 	}
 	
