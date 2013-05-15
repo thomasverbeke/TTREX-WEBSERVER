@@ -48,79 +48,81 @@ public class SerialReader implements Runnable {
 		
 		event.getServletContext().setAttribute("readQueue", readQueue);	//add queue to the context	
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
+		 
+		Thread thread = new Thread(new SerialWriter(event,strOut));
+		thread.start();
 		
-		try {
-			System.out.print("Connecting...");
-			raspSocket = new Socket("192.168.4.103",5999); //IP , port number
-			str = new ObjectInputStream(raspSocket.getInputStream());
-			strOut = new ObjectOutputStream(raspSocket.getOutputStream());
-			
-		
-			
-			 Thread thread = new Thread(new SerialWriter(event,strOut));
-     		 thread.start();	
-			
-			System.out.println("OK");
-		} catch (UnknownHostException e) {
-			System.err.println("Host unknown");
-			System.out.println(e);
-			//System.exit(1);
-		} catch (IOException e) {
-			System.err.println("IO Exception");
-			System.out.println(e);
-			//System.exit(1);		
-		}
-			
-	}
+		}	
+	
 	
 	public void run() {
 		//read from socket 
+
 		while (true) {
   
 			try {
 				
-				if (raspSocket.isConnected()){
+				System.out.print("Connecting...");
+				raspSocket = new Socket("192.168.4.103",5999); //IP , port number
+				str = new ObjectInputStream(raspSocket.getInputStream());
+				strOut = new ObjectOutputStream(raspSocket.getOutputStream());
+			
+				System.out.println("OK");		
+				while (true){
+					if (raspSocket.isConnected()){		
+						try {						
+							TrackEvent object = (TrackEvent) str.readObject();
 						
-					try {
-						
-						TrackEvent object = (TrackEvent) str.readObject();
-					
-						System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
-						
-						ArrayList runnerOne = new ArrayList(); 
-		    		
-						//instanceOf
-						
-		        		runnerOne.add("runnerFrame"); //FrameType
-		        		runnerOne.add(object.getRunnerId()); //ID
-		        		runnerOne.add(object.getPercentage()); //Position
-		        		runnerOne.add(object.getLatitude());
-		        		runnerOne.add(object.getLongitude());
-		        		runnerOne.add(object.getRounds());
-		        		runnerOne.add(object.getSpeed());
-		        		
-		        		readQueue.add(runnerOne);
-		        		
-					} catch (EOFException e){
-						System.out.println("Rasp Pi disconnected");
-						System.exit(1);
+							System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());
+							
+							ArrayList runnerOne = new ArrayList(); 
+			    		
+			        		runnerOne.add("runnerFrame"); //FrameType
+			        		runnerOne.add(object.getRunnerId()); //ID
+			        		runnerOne.add(object.getPercentage()); //Position
+			        		runnerOne.add(object.getLatitude());
+			        		runnerOne.add(object.getLongitude());
+			        		runnerOne.add(object.getRounds());
+			        		runnerOne.add(object.getSpeed());
+			        		
+			        		readQueue.add(runnerOne);
+			        		
+						} catch (EOFException e){
+							System.out.println("Rasp Pi disconnected.");
+							
+							break;
+						} catch(Exception e){
+							System.out.println("Something weird happened!");
+							e.printStackTrace();
+							break;
+						}
+					} else if (raspSocket.isClosed()){
+						System.out.println("Socket closed. Trying to reconnect...");
+						break;
+					} else {
+						System.out.println("Socket closed! Trying to reconnect...");
+						break;
 					}
-					
-					
-	        	
-	        		
-				} else if (raspSocket.isClosed()){
-					System.out.println("Socket closed");
-					System.exit(1);
-				} else {
-					System.out.println("Socket closed!");
-					System.exit(1);
 				}
-			} catch(Exception e){
-	
-				e.printStackTrace();
-			} 
+			} catch(UnknownHostException e){
+				System.out.println("Unknown Host!");
 				
+			} catch (ConnectException e) {
+				System.out.println("Unable to connect!");
+				
+			} catch (IOException e){
+				System.out.println("IOException");
+				e.printStackTrace();
+			
+			}	
+			
+			try {
+				Thread.sleep(5000);
+				System.out.println("Trying to reconnect in 5s");
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 	}
 	
