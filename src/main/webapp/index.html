@@ -36,11 +36,15 @@
 	}
 	#stats_runner{
 		position:absolute;
-	
+		right:100px;
 		visibility:hidden;
 		height:300px;
 		width:400px;
 		border:1px solid black;	
+	}
+	#stats_runner p {
+		margin:0px;
+		padding:0px;
 	}
 	#track {
 		fill: white;
@@ -83,11 +87,14 @@
     
 
     
-    <div id="stats_runner">
+    <div id="stats_runner">    	
     	<p><b>Runner stats:</b></p>
+    	<p>Number of rounds: <span id="numRounds">0</span> rounds</p>
+    	<p>Latitude <span id="lat">0</span></p>
+    	<p>Longitude <span id="lng">0</span></p>
     	<p>Fastest Laptime: ?</p>
         <p>Slowest Laptime: ?</p>
-        <p>Current speed: ?</p>
+        <p>Current speed: <span id="speed">0</span> m/s</p>
         <p>Fastest Laptime: ...</p>
     </div>
     
@@ -163,7 +170,7 @@
 	    };
 		
 		
-		function setRunner(id, position){
+		function setRunner(id, position,lat,lng, numRounds,speed){
 			//does runner exist?
 			if (runnerList.indexOf(id) > -1){
 				//does exist > update position
@@ -173,11 +180,15 @@
 				runner.percentage = position;
 				
 				
-				runner.SVGpath.pointAtPercent(runner.percentage/10,function(point){
-					console.log("position for runner: "+id+" updated to "+point.y + " "+point.x +"("+ runner.percentage +"%)"); //debug
+				runner.SVGpath.pointAtPercent(runner.percentage,function(point){
+					console.log("position for runner: "+id+" updated to "+point.y + " "+point.x +"("+ runner.percentage*100 +"%)"); //debug
 					var _id = "runner"+id;
 					document.getElementById(_id).style.top = (point.y-13)+"px"; //get correct item and change position
 					document.getElementById(_id).style.left = (point.x-10)+"px";
+					document.getElementById("lat").innerHTML = lat;
+					document.getElementById("lng").innerHTML = lng;
+					document.getElementById("numRounds").innerHTML = numRounds;
+					document.getElementById("speed").innerHTML = speed;
 				});
 				
 				
@@ -190,8 +201,30 @@
 				};
 				
 				//should be dynamic
-				var SVGPath = "M480 120C600 120,600 240,480 240M480 240L120 240C0 240 0 120 120 120L480 120";
+				
+				//uses css for styling
+				
+				//do we have to restore?
+				A = { x: 1*scaleFactor, y: 1*scaleFactor };
+				B = { x: (4+width)*scaleFactor, y: 1*scaleFactor };
+				C = { x: 1*scaleFactor, y: (2+height)*scaleFactor };
+				D = { x: (4+width)*scaleFactor, y: (2+height)*scaleFactor };			
+				E = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (1)*scaleFactor };	
+				F = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (2+height)*scaleFactor };
+				G = { x: (0-parseInt(turningP)), y: 1*scaleFactor };
+				H = { x: (0-parseInt(turningP)), y: (2+height)*scaleFactor };
+	
+				
+				var SVGPath = 	"M"+B.x+" "+B.y+
+				"C"+E.x+" "+E.y+ ","+F.x+" "+F.y+ ","+D.x+" "+D.y + 
+				"M"+D.x+" "+D.y +"L" + C.x + " "+ C.y + 
+				"C"+ H.x+ " "+ H.y+ " "+ G.x+" "+G.y+" "+A.x+" "+ A.y+
+				"L"+B.x+ " "+B.y;
+							
+				//var SVGPath = "M480 120C600 120,600 240,480 240M480 240L120 240C0 240 0 120 120 120L480 120";
 				var curve = new SVGCurve(SVGPath);
+				
+				console.log(curve);
 			
 				var container = document.getElementById("runner_container");
 				var newRunner = document.createElement('div');
@@ -199,26 +232,107 @@
 				newRunner.className = "runner"; //here we will define what runners got in common
 				newRunner.style.top = startPos.top;
 				newRunner.style.left = startPos.left;
+				newRunner.setAttribute("onclick","runnerClick()");
 				container.appendChild(newRunner); //add runner to the container
 					
-				run = new myRunner(id,position,curve);
+				run = new myRunner(id,position,curve,numRounds);
 				runnerList.push(run);
 				
 			}
 	
 		}
 		
-		function myRunner(id, percentage,curve){
+		function myRunner(id, percentage,curve,numRounds){
 			this.id = id;
 			this.percentage = percentage;	
 			this.lastPos = null;
 			this.SVGpath = curve;
 			this.backup_SVGpath = curve;
 			this.level = 0;
+			this.numRounds = numRounds;
 		}
 		
 		
 	
+		function drawTrack(){			
+			// G	A	B	E
+			// H	C	D	F
+			
+			A = { x: 1*scaleFactor, y: 1*scaleFactor };
+			B = { x: (4+width)*scaleFactor, y: 1*scaleFactor };
+			C = { x: 1*scaleFactor, y: (2+height)*scaleFactor };
+			D = { x: (4+width)*scaleFactor, y: (2+height)*scaleFactor };			
+			E = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (1)*scaleFactor };	
+			F = { x: (((5+width)*scaleFactor)+parseInt(turningP)), y: (2+height)*scaleFactor };
+			G = { x: (0-parseInt(turningP)), y: 1*scaleFactor };
+			H = { x: (0-parseInt(turningP)), y: (2+height)*scaleFactor };
+			
+			//track path
+			var SVGPath = 	"M"+B.x+" "+B.y+
+						"C"+E.x+" "+E.y+ ","+F.x+" "+F.y+ ","+D.x+" "+D.y + 
+						"M"+D.x+" "+D.y +"L" + C.x + " "+ C.y + 
+						"C"+ H.x+ " "+ H.y+ " "+ G.x+" "+G.y+" "+A.x+" "+ A.y+
+						"L"+B.x+ " "+B.y;
+			
+			console.log(SVGPath);
+			
+			runnerObj = new SVGCurve(SVGPath);
+			document.getElementById("track").setAttribute('d', SVGPath);
+			
+			//update the track inside the runner
+			for (var i=0; i<runnerList.length; i++){
+				runnerList[i].SVGpath = runnerObj;			
+			}
+		}
+			
+		function changeScale(value){
+			scaleFactor=value;
+			drawTrack();
+		}
+		
+		function changeHeight(value){
+			height = value/10;
+			drawTrack();
+		}
+		
+		function changeWidth(value){
+			width = value/10;
+			drawTrack();
+		}
+		
+		function changeVirtPos(value){
+			turningP = value;
+			drawTrack();
+		}
+		
+		function lineWidth(value){
+			console.log("test");
+			document.getElementById("track").style.strokeWidth = value;		
+		}
+		
+		function runnerClick(){
+			console.log("runner clicked");
+			if (val==0){
+				document.getElementById("stats_runner").style.visibility = "visible";
+				val=1;
+			} else {
+				document.getElementById("stats_runner").style.visibility = "hidden";
+				val=0;
+	
+			}
+			
+		}
+		
+		function setMarker(latitude,longitude){
+			
+		}
+		
+		
+		
+		
+		
+		
+		
 		
 		/** IMPLEMENTATION CODE**/
 		
@@ -257,7 +371,7 @@
 			
 		}
 		
-		initRunners();
+		//initRunners();
 	
 		
 		//animate all runners
@@ -388,7 +502,7 @@
 			console.log("Generated SVG Path: "+SVGPath); //print to console
 			
 			//var SVGPath = "M400 100C 500 100, 500 200, 400 200 M400 200 L100 200 C0 200 0 100 100 100 M100 100 L400 100";
-			runnerObj = new SVGCurve(SVGPath);
+			var curve= new SVGCurve(SVGPath);
 			
 			//compose standard drawing
 			
@@ -454,66 +568,7 @@
 		function clear(){
 			ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);	
 		}
-		function drawTrack(){			
-			// G	A	B	E
-			// H	C	D	F
-			
-			builtCoord();//rebuilt coord		
-			//ctx.lineWidth = lineWidthVal;
-			//ctx.strokeStyle = "#cc430b";
-			//ctx.beginPath();
-			//ctx.moveTo(C.x,C.y); 
-			//ctx.lineTo(D.x,D.y);
-			//ctx.bezierCurveTo(F.x, F.y, E.x, E.y, B.x, B.y); 
-			//ctx.lineTo(A.x, A.y); 
-			//ctx.moveTo(A.x, A.y); 
-			//ctx.bezierCurveTo(G.x,G.y, H.x ,H.y , C.x,C.y);
-			
-			//ctx.stroke() //draw			
-		}
-			
-		function changeScale(value){
-			clear();
-			scaleFactor=value;
-			drawTrack();
-		}
 		
-		function changeHeight(value){
-			clear();
-			height = value/10;
-			drawTrack();
-		}
-		
-		function changeWidth(value){
-			clear();
-			width = value/10;
-			drawTrack();
-		}
-		
-		function changeVirtPos(value){
-			clear();
-			turningP = value;
-			drawTrack();
-		}
-		
-		function lineWidth(value){
-			lineWidthVal = value;
-			clear();
-			drawTrack();		
-		}
-		
-		function runnerClick(){
-			console.log("runner clicked");
-			if (val==0){
-				document.getElementById("stats_runner").style.visibility = "visible";
-				val=1;
-			} else {
-				document.getElementById("stats_runner").style.visibility = "hidden";
-				val=0;
-	
-			}
-			
-		}
 		
 		
 				

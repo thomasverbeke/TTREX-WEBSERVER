@@ -126,7 +126,7 @@ function clearWP(){
 }
 
 function initialize() {
-	coord = new google.maps.LatLng(50.86833074492983,4.690893888473511);
+	coord = new google.maps.LatLng(50.973896,5.093896); //50.86833074492983,4.690893888473511
 				mapOptions = { 
 					zoom: 19, 
 					center: coord , 
@@ -222,4 +222,36 @@ function initialize() {
 				}
 				
 }
-</script>		
+
+var currentPos = null;
+
+function setMarker(latitude,longitude){
+	
+	//first delete old maker
+	if (currentPos != null){
+		currentPos.setMap(null);
+	}
+	
+	
+	var position = new google.maps.LatLng(latitude,longitude);
+	
+	var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+	currentPos = new google.maps.Marker({
+		position: position,
+		title: '#' + path.getLength(),
+		map: map,
+		dragable: false,
+		clickable: true,
+		name: name,
+		raiseOnDrag: false,
+		icon: iconBase + 'schools_maps.png',
+		setZIndex: 20
+	});	
+}
+
+function setRunner(){
+	
+}
+
+</script>	
+	

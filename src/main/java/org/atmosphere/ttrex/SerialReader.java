@@ -51,7 +51,7 @@ public class SerialReader implements Runnable {
 		
 		try {
 			System.out.print("Connecting...");
-			raspSocket = new Socket("25.149.89.217",5999); //IP , port number
+			raspSocket = new Socket("192.168.4.103",5999); //IP , port number
 			str = new ObjectInputStream(raspSocket.getInputStream());
 			strOut = new ObjectOutputStream(raspSocket.getOutputStream());
 			
@@ -64,11 +64,11 @@ public class SerialReader implements Runnable {
 		} catch (UnknownHostException e) {
 			System.err.println("Host unknown");
 			System.out.println(e);
-			System.exit(1);
+			//System.exit(1);
 		} catch (IOException e) {
 			System.err.println("IO Exception");
 			System.out.println(e);
-			System.exit(1);		
+			//System.exit(1);		
 		}
 			
 	}
@@ -89,9 +89,16 @@ public class SerialReader implements Runnable {
 						
 						ArrayList runnerOne = new ArrayList(); 
 		    		
+						//instanceOf
+						
 		        		runnerOne.add("runnerFrame"); //FrameType
 		        		runnerOne.add(object.getRunnerId()); //ID
 		        		runnerOne.add(object.getPercentage()); //Position
+		        		runnerOne.add(object.getLatitude());
+		        		runnerOne.add(object.getLongitude());
+		        		runnerOne.add(object.getRounds());
+		        		runnerOne.add(object.getSpeed());
+		        		
 		        		readQueue.add(runnerOne);
 		        		
 					} catch (EOFException e){

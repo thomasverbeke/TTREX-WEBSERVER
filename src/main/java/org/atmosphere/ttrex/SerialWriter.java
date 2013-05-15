@@ -47,7 +47,7 @@ public class SerialWriter implements Runnable {
 						    	JSONArray wplist = (JSONArray) jsonObj;
 						   
 						    	JSONObject wp;
-						    	
+						    	System.out.println(wplist.size());
 						    	for (int wpID=0; wpID<wplist.size();wpID++){
 						    		wp = (JSONObject) wplist.get(wpID);
 						    		Object Latitude = wp.get("Latitude");

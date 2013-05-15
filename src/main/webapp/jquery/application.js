@@ -14,8 +14,12 @@ $(function () {
     // Attributes
     //document.location.toString()
     //https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API
-    //request.url = document.location.toString() + 'chat';
-    var request = { url: 'ws://localhost:8080/ttrex/' + 'ttrex', //url to connect with
+    //var test = document.location.toString() + 'ttrex';
+    //var test4 = 'ws://localhost:8080/ttrex/';
+    //var test2 = 'ws://'+document.location.host+'/ttrex/';
+    console.log();
+   
+    var request = { url: 'ws://'+document.location.host+'/ttrex/' + 'ttrex', //url to connect with
         contentType : "application/json",
         logLevel : 'debug', //allowed are info, debug and error
         transport : transport ,
@@ -26,7 +30,9 @@ $(function () {
     request.onOpen = function(response) {
     	//invoked when the connection gets opened.	
     	if (response.transport == "websocket"){
-    		document.getElementById("serverLink").innerHTML = "<p>Connected to server using websockets</p>";  
+    		if (document.getElementById("serverLink") != null){
+    			document.getElementById("serverLink").innerHTML = "<p>Connected to server using websockets</p>";  
+    		}
     	} else {
     		document.getElementById("serverLink").innerHTML = "<p>Connected using " + response.transport + "</p>";  
     	}
@@ -82,8 +88,8 @@ $(function () {
             			//console.log("runner ID: "+json.data[1]+" position (%):"+json.data[2]/100);
             			//update position of the runner
             			//if runner does not exist => add runner
-            			setRunner(json.data[1],json.data[2]/100);
-            			
+            			setRunner(json.data[1],json.data[2],json.data[3],json.data[4],json.data[5],json.data[6]);
+            			setMarker(json.data[3],json.data[4]);
             		break;
             	
             	case "infoFrame":
