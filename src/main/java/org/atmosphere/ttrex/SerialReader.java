@@ -50,7 +50,6 @@ public class SerialReader implements Runnable {
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
 		 
 		this.event = event;
-
 		
 		}	
 	
