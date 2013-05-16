@@ -6,7 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("/stats")
-public class Stats {
+public class StatsService {
 	//TODO GET RUNNER trough ID
 	//TODO GET STATS
 	

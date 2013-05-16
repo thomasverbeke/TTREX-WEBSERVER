@@ -40,7 +40,7 @@ public class SerialReader implements Runnable {
 	ObjectInputStream str;
 	Socket raspSocket;
 	ObjectOutputStream strOut;
-	
+	ServletContextEvent event; 
 	public SerialReader(ServletContextEvent event) throws Exception {
 		ArrayList init = new ArrayList(); 
     	init.add("init");
@@ -49,8 +49,8 @@ public class SerialReader implements Runnable {
 		event.getServletContext().setAttribute("readQueue", readQueue);	//add queue to the context	
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
 		 
-		Thread thread = new Thread(new SerialWriter(event,strOut));
-		thread.start();
+		this.event = event;
+
 		
 		}	
 	
@@ -67,6 +67,9 @@ public class SerialReader implements Runnable {
 				str = new ObjectInputStream(raspSocket.getInputStream());
 				strOut = new ObjectOutputStream(raspSocket.getOutputStream());
 			
+				Thread thread = new Thread(new SerialWriter(event,strOut));
+				thread.start();
+				
 				System.out.println("OK");		
 				while (true){
 					if (raspSocket.isConnected()){		
