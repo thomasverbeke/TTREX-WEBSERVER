@@ -6,6 +6,7 @@
 
     <description>ttrex</description>
     <display-name>ttrex</display-name>
+    
     <servlet>
         <description>AtmosphereServlet</description>
         <servlet-name>AtmosphereServlet</servlet-name>
@@ -17,6 +18,22 @@
         <servlet-name>AtmosphereServlet</servlet-name>
         <url-pattern>/ttrex/*</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+    	<servlet-name>jersey</servlet-name>
+          <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+           <init-param>
+               <param-name>com.sun.jersey.config.property.packages</param-name>
+               <param-value>org.atmosphere.api</param-value>
+           </init-param>
+  	</servlet>
+     
+     <servlet-mapping>
+        <servlet-name>jersey</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+       
+     
      <init-param>
          <param-name>org.atmosphere.cpr.atmosphereHandlerPath</param-name>
          <param-value>/WEB-INF/classes/</param-value>

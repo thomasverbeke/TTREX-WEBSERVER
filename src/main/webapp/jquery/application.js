@@ -79,7 +79,7 @@ $(function () {
     	//TODO multithread onMessage using webworkers
         //callback when a new frame has arrived
         var message = response.responseBody;
-        console.log("new frame arrived");
+       // console.log("new frame arrived");
         try {
             var json = jQuery.parseJSON(message);
             
@@ -94,6 +94,10 @@ $(function () {
             	
             	case "infoFrame":
             		console.log("frame not recognised");
+            		break;
+            		
+            	case "systemMessage":
+            		console.log("raspi is offline");
             		break;
             	
             }

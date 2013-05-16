@@ -119,6 +119,13 @@ public class SerialReader implements Runnable {
 			try {
 				Thread.sleep(5000);
 				System.out.println("Trying to reconnect in 5s");
+				
+				ArrayList message = new ArrayList(); 
+	    		
+        		message.add("systemMessage"); //FrameType
+        		message.add("raspi offline");
+        		readQueue.add(message);
+        		
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
