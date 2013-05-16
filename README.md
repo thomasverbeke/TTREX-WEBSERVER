@@ -5,11 +5,34 @@ EE5 (GroupT) Project to be used at the 24h loop to monitor runners on a track
 
 It reads from a socket; sends data to webclients using 2 frames 
 
-runner frame which contains ID & Position
+1. runner frame which contains ID, % on Track, Latitude, Longitude, Speed, Rounds
   
-general info frame which contains other information (ranking,..)
+2. general info frame which contains other information (ranking,..)
 
-It uses the Atmosphere Framework to establish a cross-platform & browser websocket connection with it's webclients for 
+It uses the Atmosphere Framework to establish a cross-platform & browser "websocket" connection with it's webclients for 
 low latency full duplex communication.
 
 Web-interface is crossplatform SVG; it can animate collision detection.
+
+MAP
+===
+
+There is also a map application which can send the track coordinates to the Raspi
+
+
+API
+====
+
+There is also an API which uses REST webservices (and no websockets); this way other teams can tap into our datastream.
+No calls are made to the Raspi; instead persisted data is send back.
+
+host/ttrex/api/runner/ID
+
+returns "application/json"
+all stats of a runner with ID
+
+host/ttrex/api/stats
+
+return "application/json"
+ranking of all runners
+
