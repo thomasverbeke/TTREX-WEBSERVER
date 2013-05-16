@@ -1,5 +1,7 @@
 package org.atmosphere.api;
 
+import java.util.ArrayList;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,7 +20,7 @@ public class StatsService {
 	 
     @GET
     @Produces("application/json")
-    public String broadcast() {
-        return "stats";
+    public StatsBean broadcast() {
+    	return new StatsBean();
     }
 }
