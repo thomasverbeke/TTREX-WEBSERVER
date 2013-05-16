@@ -23,7 +23,7 @@ There is also a map application which can send the track coordinates to the Rasp
 API
 ====
 
-There is also an API which uses REST webservices (and no websockets); this way other teams can tap into our datastream.
+There is also an API which uses REST webservices (and no websockets) It is based on the Jersey framework; this way other teams can tap into our datastream.
 No calls are made to the Raspi; instead persisted data is send back.
 
 host/ttrex/api/runner/ID
