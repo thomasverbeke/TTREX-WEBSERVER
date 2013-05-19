@@ -1,13 +1,9 @@
 package org.atmosphere.api;
 
-import org.atmosphere.annotation.Suspend;
-import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.ttrex.Storage;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,7 +14,7 @@ import javax.ws.rs.core.Context;
 
 @Path("/runner/{id}")
 public class RunnerService {
-	//injecting servlet context
+	
 	private Storage tmpStorage;
 	@PathParam("id") int runner_id;
 	private RunnerBean runner;

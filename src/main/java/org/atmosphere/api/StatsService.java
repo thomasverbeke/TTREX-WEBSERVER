@@ -2,21 +2,27 @@ package org.atmosphere.api;
 
 import java.util.ArrayList;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+
+import org.atmosphere.ttrex.Storage;
 
 @Path("/stats")
 public class StatsService {
-	//TODO GET RUNNER trough ID
-	//TODO GET STATS
+	private Storage tmpStorage;
+	private StatsBean stats;
 	
-	//Need to identify the type of request
-	@PathParam("request") String request;
-	
-	//
-	
+	//Inject context
+	public StatsService(@Context ServletContext context){
+		System.out.println("Webservice: Responding to <RunnerService> request");
+		tmpStorage = (Storage) context.getAttribute("storageClass");	
+		stats = (StatsBean) tmpStorage.getRanking();
+		
+	}	
 	 
     @GET
     @Produces("application/json")
