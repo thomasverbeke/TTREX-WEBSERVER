@@ -71,8 +71,12 @@ public class Storage {
 	}
 	
 	public StatsBean getRanking(){
-		//TODO Generate StatsBean
-		return null;
+		StatsBean stats = new StatsBean(); 
+		
+		//2 teams are already hardcoded inside the StatsBean
+		//we need to make a sorted list based upon the number of rounds
+		
+		return stats;
 	} 
 	
 	public void loadInTeams(){
