@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.servlet.ServletContextEvent;
 
+import org.atmosphere.api.RunnerBean;
 import org.atmosphere.ttrex.SerialWriter;
 
 import be.ttrax.raspi.frames.TrackEvent;
@@ -35,8 +36,10 @@ public class SerialReader implements Runnable {
 	Thread readThread;
 
 	private BlockingQueue<ArrayList> readQueue = new LinkedBlockingQueue<ArrayList>();
-
 	BlockingQueue<ArrayList> writeQueue = new LinkedBlockingQueue<ArrayList>();
+	
+	
+	
 	ObjectInputStream str;
 	Socket raspSocket;
 	ObjectOutputStream strOut;
@@ -72,7 +75,11 @@ public class SerialReader implements Runnable {
 				System.out.println("OK");		
 				while (true){
 					if (raspSocket.isConnected()){		
-						try {						
+						try {	
+							
+							//TODO Add information to the context
+							
+							
 							TrackEvent object = (TrackEvent) str.readObject();
 						
 							System.out.println(object.getID()+":"+object.getRunnerId()+":"+object.getPercentage());

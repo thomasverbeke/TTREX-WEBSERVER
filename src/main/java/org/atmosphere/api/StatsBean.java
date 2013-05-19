@@ -11,6 +11,8 @@ public class StatsBean {
 	
 	public StatsBean() {
 	
+		//Could hardcode the teams for now and configure them later using the config.xml
+		
 		runnerObj firstTeam = new runnerObj(0,"Industria");
 		runnerObj secondTeam = new runnerObj(1,"KLA");
 		
@@ -30,7 +32,7 @@ public class StatsBean {
 		}
 		
 		runnerObj(){
-			
+			// JAXB needs this
 		}
 		
 	}
