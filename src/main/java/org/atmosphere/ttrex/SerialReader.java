@@ -98,6 +98,8 @@ public class SerialReader implements Runnable {
 			        		
 			        		//add to storage class
 			        		tmpStorage.addRunner(object.getRunnerId(), object.getPercentage(), object.getLatitude(), object.getLatitude(), object.getRounds(), object.getSpeed());
+			        		tmpStorage.addRunner(object.getRunnerId()+1, object.getPercentage(), object.getLatitude(), object.getLatitude(), object.getRounds()+4, object.getSpeed());
+			        		tmpStorage.addRunner(object.getRunnerId()+2, object.getPercentage(), object.getLatitude(), object.getLatitude(), object.getRounds()+10, object.getSpeed());
 			        		
 						} catch (EOFException e){
 							System.out.println("Rasp Pi disconnected.");
