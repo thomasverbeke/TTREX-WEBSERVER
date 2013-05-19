@@ -1,6 +1,8 @@
 package org.atmosphere.ttrex;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.atmosphere.api.RunnerBean;
 import org.atmosphere.api.StatsBean;
@@ -71,11 +73,21 @@ public class Storage {
 	}
 	
 	public StatsBean getRanking(){
-		StatsBean stats = new StatsBean(); 
-		
 		//2 teams are already hardcoded inside the StatsBean
-		//we need to make a sorted list based upon the number of rounds
+		StatsBean stats = new StatsBean(); 
+	
+		//sort the list
+		Collections.sort(runnerList, new CompareRounds());
 		
+		//compare information from xml files (we will hardcode teamData for now).
+		
+		//loop sorted list
+		for (int i=0; i<runnerList.size(); i++){
+			RunnerBean runner = (RunnerBean) runnerList.get(i);	
+			stats.addTeam(runner.runner_id, "TEAM"+i, runner.rounds);
+		}
+		
+		//return bean
 		return stats;
 	} 
 	
@@ -83,4 +95,15 @@ public class Storage {
 		//TODO Acces xml file on server and setup teams
 	}
 	
+	public class CompareRounds implements Comparator<RunnerBean> {
+		@Override
+		public int compare(RunnerBean o1, RunnerBean o2) {
+			Integer obj1 = new Integer(o1.rounds);
+			Integer obj2 = new Integer(o2.rounds);
+			return obj1.compareTo(obj2);
+		}
+	}
+	
 }
+
+

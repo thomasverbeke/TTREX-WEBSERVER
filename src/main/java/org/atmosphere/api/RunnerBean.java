@@ -23,5 +23,5 @@ public class RunnerBean {
 		this.rounds = rounds;
 		this.speed = speed;
    }
-	
+
 }
