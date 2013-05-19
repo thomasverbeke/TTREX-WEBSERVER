@@ -30,10 +30,13 @@ public class Storage {
 	*/
 	public void addRunner(int runner_id, double percentage,double latitude, double longitude, int rounds, double speed){
 		//check if runner is already present?
-		if (!(getRunner(runner_id) instanceof RunnerBean)){
+		if (editRunner(runner_id,percentage,latitude,longitude,rounds,speed)){
+			//ok
+		} else {
+			//add runner
 			RunnerBean runner = new RunnerBean(runner_id,percentage,latitude,longitude,rounds,speed);	
 			runnerList.add(runner);
-		}	
+		}
 	}
 	
 	/* 	Get data for a runner
@@ -60,13 +63,15 @@ public class Storage {
 	 *  @param	rounds		number of rounds the runner has completed
 	 *  @param	speed		current gps speed of the runner
 	*/
-	public void editRunner(int runner_id, double percentage,double latitude, double longitude, int rounds, double speed){
+	public boolean editRunner(int runner_id, double percentage,double latitude, double longitude, int rounds, double speed){
 		for (int i=0; i<runnerList.size(); i++){
 			RunnerBean runner = (RunnerBean) runnerList.get(i);
 			if (runner.runner_id == runner_id){
 				runnerList.set(i, new RunnerBean(runner_id, percentage,latitude,longitude,rounds,speed));
+				return true;
 			}		
 		}
+		return false;
 	}
 	
 	/* 	Clear all data  */

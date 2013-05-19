@@ -2,24 +2,43 @@ package org.atmosphere.api;
 
 import org.atmosphere.annotation.Suspend;
 import org.atmosphere.annotation.Broadcast;
+import org.atmosphere.ttrex.Storage;
 
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+
+
+
 
 @Path("/runner/{id}")
 public class RunnerService {
-	//TODO GET RUNNER trough ID
-	//TODO GET STATS
+	//injecting servlet context
+	private Storage tmpStorage;
+	@PathParam("id") int runner_id;
+	private RunnerBean runner;
 	
-	//Need to identify the type of request
-	@PathParam("request") String request;
-	 
+	//Inject context
+	public RunnerService(@Context ServletContext context){
+		System.out.println("Webservice: Responding to <RunnerService> request");
+		tmpStorage = (Storage) context.getAttribute("storageClass");	
+		runner = tmpStorage.getRunner(runner_id);	//get runner from the storage class
+		
+	}	
+	
     @GET @Produces("application/json")
     public RunnerBean broadcast() {
-    	return new RunnerBean(0,0.32530120,50.87416333,4.70799666,3,6);
+    	if (runner == null){
+    		//TODO better handling when user does not exist
+    		return new RunnerBean(0,0,0,0,0,0);
+    	} else {
+    		return runner;
+    	}
     }
 
 }
