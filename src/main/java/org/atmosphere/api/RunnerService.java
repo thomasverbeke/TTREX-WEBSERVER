@@ -7,7 +7,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 
@@ -28,13 +31,19 @@ public class RunnerService {
 	}	
 	
     @GET @Produces("application/json")
-    public RunnerBean broadcast() {
-    	if (runner == null){
-    		//TODO better handling when user does not exist
-    		return new RunnerBean(0,0,0,0,0,0);
+    public RunnerBean broadcast() throws Exception {
+    	if (runner == null) {
+    		throw new BadRequestException("ID does not exist on webserver");
     	} else {
     		return runner;
     	}
     }
+    
+    public class BadRequestException extends WebApplicationException {
+        public BadRequestException(String message) {
+            super(Response.status(Response.Status.BAD_REQUEST)
+                .entity(message).type(MediaType.TEXT_PLAIN).build());
+        }
+   }
 
 }
