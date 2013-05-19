@@ -29,9 +29,11 @@ public class Storage {
 	 *  @param	speed		current gps speed of the runner
 	*/
 	public void addRunner(int runner_id, double percentage,double latitude, double longitude, int rounds, double speed){
-		RunnerBean runner = new RunnerBean(runner_id,percentage,latitude,longitude,rounds,speed);	
-		runnerList.add(runner);
-		
+		//check if runner is already present?
+		if (!(getRunner(runner_id) instanceof RunnerBean)){
+			RunnerBean runner = new RunnerBean(runner_id,percentage,latitude,longitude,rounds,speed);	
+			runnerList.add(runner);
+		}	
 	}
 	
 	/* 	Get data for a runner
@@ -79,12 +81,12 @@ public class Storage {
 		//sort the list
 		Collections.sort(runnerList, new CompareRounds());
 		
-		//compare information from xml files (we will hardcode teamData for now).
+		//TODO compare information from xml files
 		
 		//loop sorted list
 		for (int i=0; i<runnerList.size(); i++){
 			RunnerBean runner = (RunnerBean) runnerList.get(i);	
-			stats.addTeam(runner.runner_id, "TEAM"+i, runner.rounds);
+			stats.addTeam(runner.runner_id, "TEAM"+i, runner.rounds); //hardcoded teamname for now
 		}
 		
 		//return bean
@@ -93,6 +95,7 @@ public class Storage {
 	
 	public void loadInTeams(){
 		//TODO Acces xml file on server and setup teams
+		
 	}
 	
 	public class CompareRounds implements Comparator<RunnerBean> {

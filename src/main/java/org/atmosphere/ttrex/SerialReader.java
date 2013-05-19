@@ -37,8 +37,7 @@ public class SerialReader implements Runnable {
 
 	private BlockingQueue<ArrayList> readQueue = new LinkedBlockingQueue<ArrayList>();
 	BlockingQueue<ArrayList> writeQueue = new LinkedBlockingQueue<ArrayList>();
-	
-	
+	Storage tmpStorage = new Storage();
 	
 	ObjectInputStream str;
 	Socket raspSocket;
@@ -50,11 +49,12 @@ public class SerialReader implements Runnable {
 		readQueue.add(init);
 		
 		event.getServletContext().setAttribute("readQueue", readQueue);	//add queue to the context	
+		event.getServletContext().setAttribute("storageClass", tmpStorage);	//add storage class to context
 		writeQueue = (BlockingQueue<ArrayList>) event.getServletContext().getAttribute("writeQueue");
 		 
 		this.event = event;
 		
-		}	
+	}	
 	
 	
 	public void run() {
@@ -95,6 +95,9 @@ public class SerialReader implements Runnable {
 			        		runnerOne.add(object.getSpeed());
 			        		
 			        		readQueue.add(runnerOne);
+			        		
+			        		//add all to storage class
+			        		//tmpStorage.addRunner(runner_id, percentage, latitude, longitude, rounds, speed);
 			        		
 						} catch (EOFException e){
 							System.out.println("Rasp Pi disconnected.");
