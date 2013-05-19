@@ -65,7 +65,7 @@ public class SerialReader implements Runnable {
 			try {
 				
 				System.out.print("Connecting...");
-				raspSocket = new Socket("192.168.4.103",5999); //IP , port number
+				raspSocket = new Socket("25.149.89.217",5999); //IP , port number
 				str = new ObjectInputStream(raspSocket.getInputStream());
 				strOut = new ObjectOutputStream(raspSocket.getOutputStream());
 			

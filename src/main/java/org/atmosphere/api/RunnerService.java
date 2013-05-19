@@ -1,5 +1,9 @@
 package org.atmosphere.api;
 
+import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.atmosphere.ttrex.Storage;
 
 import javax.servlet.ServletContext;
@@ -17,13 +21,12 @@ import javax.ws.rs.core.Response;
 
 @Path("/runner/{id}")
 public class RunnerService {
-	
+	private BlockingQueue<ArrayList> readQueue = new LinkedBlockingQueue<ArrayList>();
 	private Storage tmpStorage;
-	@PathParam("id") int runner_id;
 	private RunnerBean runner;
 	
 	//Inject context
-	public RunnerService(@Context ServletContext context){
+	public RunnerService(@Context ServletContext context, @PathParam("id") int runner_id){
 		System.out.println("Webservice: Responding to <RunnerService> request");
 		tmpStorage = (Storage) context.getAttribute("storageClass");	
 		runner = tmpStorage.getRunner(runner_id);	//get runner from the storage class

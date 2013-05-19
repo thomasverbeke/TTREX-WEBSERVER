@@ -27,6 +27,6 @@ public class StatsService {
     @GET
     @Produces("application/json")
     public StatsBean broadcast() {
-    	return new StatsBean();
+    	return stats;
     }
 }
