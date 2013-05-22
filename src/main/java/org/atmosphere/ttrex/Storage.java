@@ -14,6 +14,8 @@ import javax.persistence.TypedQuery;
 
 import org.atmosphere.api.RunnerBean;
 import org.atmosphere.api.StatsBean;
+import org.atmosphere.ext.xmlReader;
+import org.xml.sax.SAXException;
 
 /* This class will store all incoming data 
  * and generate stats like ranking for the webservices & API
@@ -140,6 +142,12 @@ public class Storage {
 	
 	public void loadInTeams(){
 		//TODO Acces xml file on server and setup teams
+		try {
+			xmlReader reader = new xmlReader("http://ttrex.eu/groups.xml");
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	

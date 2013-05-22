@@ -66,8 +66,7 @@ public class SerialReader implements Runnable {
   
 			try {
 				
-				xmlReader reader = new xmlReader("http://ttrex.eu/groups.xml");
-				
+	
 				System.out.print("Connecting...");
 				raspSocket = new Socket("192.168.1.91",5999); //IP , port number
 				str = new ObjectInputStream(raspSocket.getInputStream());
@@ -135,10 +134,7 @@ public class SerialReader implements Runnable {
 				System.out.println("IOException");
 				e.printStackTrace();
 			
-			} catch (SAXException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}	
+			}
 			
 			try {
 				Thread.sleep(5000);
