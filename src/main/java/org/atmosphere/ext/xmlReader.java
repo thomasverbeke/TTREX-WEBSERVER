@@ -14,6 +14,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class xmlReader {
 
+	ArrayList<GroupBean> list;
 	public xmlReader(String path) throws SAXException{	
 		try {
 			URL url = new URL(path);
@@ -23,7 +24,7 @@ public class xmlReader {
 			myReader.setContentHandler(new myHandler());
 			myReader.parse(new InputSource(url.openStream()));
 			myHandler handler = (myHandler) myReader.getContentHandler();
-			ArrayList<Group> list = handler.getList();
+			list = handler.getList();
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -31,10 +32,14 @@ public class xmlReader {
 		}
 	}
 	
+	public ArrayList<GroupBean> getList(){
+		return list;
+	}
+	
 	public class myHandler implements ContentHandler  {
 		
-		ArrayList<Group> list = new ArrayList<Group>();
-		Group groupObj = null;
+		ArrayList<GroupBean> list = new ArrayList<GroupBean>();
+		GroupBean groupObj = null;
 		String tmpValue;
 
 		
@@ -42,7 +47,7 @@ public class xmlReader {
 			
 		}
 		
-		public ArrayList<Group> getList(){
+		public ArrayList<GroupBean> getList(){
 			return list;
 		}
 
@@ -85,7 +90,7 @@ public class xmlReader {
 			if (qName.equalsIgnoreCase("group")) {
 	           
 	            int id = attributes.getIndex(qName);
-	            groupObj = new Group(id);
+	            groupObj = new GroupBean(id);
 	   
 	        } else if (qName.equalsIgnoreCase("GroupName")) {
 	        	 System.out.println("GroupName");
@@ -146,38 +151,6 @@ public class xmlReader {
 		
 	}
 	
-	public class Group {
-		private int runner_id;
-		private String GroupName;
-		private double StartPos;
-		
-		public Group(int ID){
-			this.runner_id = ID;
-		}
-
-		public int getID() {
-			return runner_id;
-		}
-
-		public String getGroupName() {
-			return GroupName;
-		}
-
-		public void setGroupName(String groupName) {
-			GroupName = groupName;
-		}
-
-		public double getStartPos() {
-			return StartPos;
-		}
-
-		public void setStartPos(double startPos) {
-			StartPos = startPos;
-		}
-		
-		
-		
-	}
 }
 
 

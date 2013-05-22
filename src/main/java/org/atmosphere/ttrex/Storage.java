@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 import org.atmosphere.api.RunnerBean;
 import org.atmosphere.api.StatsBean;
 import org.atmosphere.ext.xmlReader;
+import org.atmosphere.ext.GroupBean;
 import org.xml.sax.SAXException;
 
 /* This class will store all incoming data 
@@ -27,6 +28,7 @@ public class Storage {
 	EntityManager em;
 	
 	private ArrayList<RunnerBean> runnerList = new ArrayList<RunnerBean>();
+	private ArrayList<GroupBean> teamList;
 	
 	/* 	Default constructor */
 	public Storage(){
@@ -48,6 +50,9 @@ public class Storage {
 		}
 		  
         em.getTransaction().commit();
+        
+        //load in teams from teams from xml file
+        teamList = loadInTeams();
 	}
 	
 	/* 	Add a runner
@@ -117,7 +122,7 @@ public class Storage {
 	/* 	Clear all data  */
 	public void reset(){
 		runnerList.clear();
-		
+		teamList.clear();
 		em.clear();
 	}
 	
@@ -128,26 +133,33 @@ public class Storage {
 		//sort the list
 		Collections.sort(runnerList, new CompareRounds());
 		
-		//TODO compare information from xml files
-		
 		//loop sorted list
 		for (int i=0; i<runnerList.size(); i++){
 			RunnerBean runner = (RunnerBean) runnerList.get(i);	
-			stats.addTeam(runner.runner_id, "TEAM"+i, runner.rounds); //hardcoded teamname for now
+			String teamName = "default";
+			
+			//loop group list for team name
+			for (int j=0; j<teamList.size(); j++){
+				if (teamList.get(j).getID() == i){
+					teamName = teamList.get(j).getGroupName();
+				}
+			}
+			stats.addTeam(runner.runner_id, teamName, runner.rounds); //hardcoded teamname for now
 		}
 		
 		//return bean
 		return stats;
 	} 
 	
-	public void loadInTeams(){
-		//TODO Acces xml file on server and setup teams
+	public ArrayList<GroupBean> loadInTeams(){
 		try {
 			xmlReader reader = new xmlReader("http://ttrex.eu/groups.xml");
+			ArrayList<GroupBean> list = reader.getList();
+			return list ;
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 		
 	}
 	
