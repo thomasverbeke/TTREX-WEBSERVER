@@ -1,8 +1,16 @@
 package org.atmosphere.ttrex;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.atmosphere.api.RunnerBean;
 import org.atmosphere.api.StatsBean;
@@ -13,11 +21,36 @@ import org.atmosphere.api.StatsBean;
  * */
 public class Storage {
 
+	EntityManagerFactory emf;
+	EntityManager em;
+	
 	private ArrayList<RunnerBean> runnerList = new ArrayList<RunnerBean>();
 	
 	/* 	Default constructor */
 	public Storage(){
+		System.out.println("Persisting storage class");
 		
+		emf = Persistence.createEntityManagerFactory("runner.odb");
+		em = emf.createEntityManager();
+		
+	
+		//first test if there is already a value
+		
+		RunnerBean runner = new RunnerBean(1,0,0,0,2,0);	
+		
+		System.out.println("commiting");
+		em.getTransaction().begin();
+	
+		
+		
+	
+		TypedQuery <RunnerBean> runnerQ = em.createQuery("SELECT r FROM Runners r",RunnerBean.class);
+       
+		if (runnerQ.getResultList() != null){
+			runnerList = (ArrayList<RunnerBean>) runnerQ.getResultList();
+		}
+		  
+        em.getTransaction().commit();
 	}
 	
 	/* 	Add a runner
@@ -30,12 +63,22 @@ public class Storage {
 	*/
 	public void addRunner(int runner_id, double percentage,double latitude, double longitude, int rounds, double speed){
 		//check if runner is already present?
+		RunnerBean runner = new RunnerBean(runner_id,percentage,latitude,longitude,rounds,speed);	
+		
 		if (editRunner(runner_id,percentage,latitude,longitude,rounds,speed)){
-			//ok
+		
+			em.getTransaction().begin();
+			em.merge(runner);
+			em.getTransaction().commit();
 		} else {
 			//add runner
-			RunnerBean runner = new RunnerBean(runner_id,percentage,latitude,longitude,rounds,speed);	
+			
 			runnerList.add(runner);
+			
+			//persist runner
+			em.getTransaction().begin();
+			em.persist(runner);
+			em.getTransaction().commit();
 		}
 	}
 	
