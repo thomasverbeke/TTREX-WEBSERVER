@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.atmosphere.ext.xmlReader.Group;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -148,16 +147,16 @@ public class xmlReader {
 	}
 	
 	public class Group {
-		private int ID;
+		private int runner_id;
 		private String GroupName;
 		private double StartPos;
 		
 		public Group(int ID){
-			this.ID = ID;
+			this.runner_id = ID;
 		}
 
 		public int getID() {
-			return ID;
+			return runner_id;
 		}
 
 		public String getGroupName() {
