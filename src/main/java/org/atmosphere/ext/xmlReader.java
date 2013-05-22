@@ -20,12 +20,12 @@ public class xmlReader {
 			URL url = new URL(path);
 		
 			XMLReader myReader = XMLReaderFactory.createXMLReader();
-			myHandler handler = null;
-			myReader.setContentHandler(handler);
+		
+			myReader.setContentHandler(new myHandler());
 			myReader.parse(new InputSource(url.openStream()));
-			
+			myHandler handler = (myHandler) myReader.getContentHandler();
 			ArrayList<Group> list = handler.getList();
-			
+		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,7 +101,7 @@ public class xmlReader {
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
 			
-			 if (qName.equals("book")) {				 
+			 if (qName.equals("group")) {				 
 				 list.add(groupObj);
 			 }
 				 

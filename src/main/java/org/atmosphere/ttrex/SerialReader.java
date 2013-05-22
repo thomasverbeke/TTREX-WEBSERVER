@@ -66,6 +66,8 @@ public class SerialReader implements Runnable {
   
 			try {
 				
+				xmlReader reader = new xmlReader("http://ttrex.eu/groups.xml");
+				
 				System.out.print("Connecting...");
 				raspSocket = new Socket("192.168.1.91",5999); //IP , port number
 				str = new ObjectInputStream(raspSocket.getInputStream());
@@ -76,7 +78,7 @@ public class SerialReader implements Runnable {
 				
 				System.out.println("OK. We are connected now");		
 				
-				xmlReader reader = new xmlReader("/groups.xml");
+				
 				
 				while (true){
 					if (raspSocket.isConnected()){		
