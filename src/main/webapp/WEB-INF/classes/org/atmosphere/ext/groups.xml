@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups>
+	<group id="0">
+		<groupName>Industria</groupName>
+		<startPos>10</startPos>
+	</group>
+	<group id="1">
+		<groupName>Appoloon</groupName>
+		<startPos>20</startPos>
+	</group>
+	<group id="2">
+		<groupName>Economica</groupName>
+		<startPos>10</startPos>
+	</group>
+	<group id="3">
+		<groupName>KLA</groupName>
+		<startPos>50</startPos>
+	</group>
+</groups>

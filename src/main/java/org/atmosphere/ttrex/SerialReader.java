@@ -24,7 +24,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.servlet.ServletContextEvent;
 
 import org.atmosphere.api.RunnerBean;
+import org.atmosphere.ext.xmlReader;
 import org.atmosphere.ttrex.SerialWriter;
+import org.xml.sax.SAXException;
 
 import be.ttrax.raspi.frames.TrackEvent;
 
@@ -65,14 +67,17 @@ public class SerialReader implements Runnable {
 			try {
 				
 				System.out.print("Connecting...");
-				raspSocket = new Socket("25.37.56.148",5999); //IP , port number
+				raspSocket = new Socket("192.168.1.91",5999); //IP , port number
 				str = new ObjectInputStream(raspSocket.getInputStream());
 				strOut = new ObjectOutputStream(raspSocket.getOutputStream());
 			
 				Thread thread = new Thread(new SerialWriter(event,strOut));
 				thread.start();
 				
-				System.out.println("OK");		
+				System.out.println("OK. We are connected now");		
+				
+				xmlReader reader = new xmlReader("/groups.xml");
+				
 				while (true){
 					if (raspSocket.isConnected()){		
 						try {	
@@ -128,6 +133,9 @@ public class SerialReader implements Runnable {
 				System.out.println("IOException");
 				e.printStackTrace();
 			
+			} catch (SAXException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}	
 			
 			try {

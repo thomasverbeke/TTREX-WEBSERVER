@@ -28,25 +28,20 @@ public class Storage {
 	
 	/* 	Default constructor */
 	public Storage(){
-		System.out.println("Persisting storage class");
-		
+
 		emf = Persistence.createEntityManagerFactory("runner.odb");
 		em = emf.createEntityManager();
-		
-	
-		//first test if there is already a value
-		
+
 		RunnerBean runner = new RunnerBean(1,0,0,0,2,0);	
 		
 		System.out.println("commiting");
 		em.getTransaction().begin();
 	
-		
-		
 	
 		TypedQuery <RunnerBean> runnerQ = em.createQuery("SELECT r FROM Runners r",RunnerBean.class);
        
 		if (runnerQ.getResultList() != null){
+			System.out.println("Data in memory; polling the database.");
 			runnerList = (ArrayList<RunnerBean>) runnerQ.getResultList();
 		}
 		  
@@ -120,6 +115,8 @@ public class Storage {
 	/* 	Clear all data  */
 	public void reset(){
 		runnerList.clear();
+		
+		em.clear();
 	}
 	
 	public StatsBean getRanking(){
