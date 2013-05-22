@@ -1,6 +1,6 @@
 package org.atmosphere.ttrex;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,8 +8,7 @@ import java.util.Comparator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
 import javax.persistence.TypedQuery;
 
 import org.atmosphere.api.RunnerBean;
@@ -30,18 +29,17 @@ public class Storage {
 	private ArrayList<RunnerBean> runnerList = new ArrayList<RunnerBean>();
 	private ArrayList<GroupBean> teamList;
 	
-	/* 	Default constructor */
+	/* 	Default constructor
+	 *  We will call our local database for information; read it in. 
+	 *  Also xml file is called from our server to determine names
+	 *  
+	 *  */
 	public Storage(){
-
 		emf = Persistence.createEntityManagerFactory("runner.odb");
 		em = emf.createEntityManager();
 
-		RunnerBean runner = new RunnerBean(1,0,0,0,2,0);	
-		
-		System.out.println("commiting");
 		em.getTransaction().begin();
-	
-	
+
 		TypedQuery <RunnerBean> runnerQ = em.createQuery("SELECT r FROM Runners r",RunnerBean.class);
        
 		if (runnerQ.getResultList() != null){
@@ -73,8 +71,7 @@ public class Storage {
 			em.merge(runner);
 			em.getTransaction().commit();
 		} else {
-			//add runner
-			
+			//add runner	
 			runnerList.add(runner);
 			
 			//persist runner
@@ -85,7 +82,6 @@ public class Storage {
 	}
 	
 	/* 	Get data for a runner
-	 * 
 	 *  @param	runner_id 	the id of the runner
 	*/
 	public RunnerBean getRunner(int runner_id){
@@ -139,6 +135,7 @@ public class Storage {
 			String teamName = "default";
 			
 			//loop group list for team name
+			//TODO maybe this looping is not ideal?
 			for (int j=0; j<teamList.size(); j++){
 				if (teamList.get(j).getID() == i){
 					teamName = teamList.get(j).getGroupName();
