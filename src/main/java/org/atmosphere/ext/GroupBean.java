@@ -3,7 +3,9 @@ package org.atmosphere.ext;
 public class GroupBean {
 	private int runner_id;
 	private String GroupName;
-	private double StartPos;
+
+	private double Longitude;
+	private double Latitude; 
 	
 	public GroupBean(int ID){
 		this.runner_id = ID;
@@ -21,12 +23,24 @@ public class GroupBean {
 		GroupName = groupName;
 	}
 
-	public double getStartPos() {
-		return StartPos;
+
+	public double getLatitude(){
+		return Latitude;
+	}
+	
+	public void setLatitude(double val){
+		this.Latitude = val;
+	}
+	
+
+	public void setLongitude(double val){
+		this.Latitude = val;
+	}
+	
+	
+	public double getLongitude(){
+		return Longitude;
 	}
 
-	public void setStartPos(double startPos) {
-		StartPos = startPos;
-	}
 	
 }

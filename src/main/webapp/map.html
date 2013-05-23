@@ -32,6 +32,33 @@ opacity:0.8;
 filter:alpha(opacity=80);
 padding:10px;
 }
+#addRunner {
+width:250px;
+height:150px;
+position:absolute;
+left:40%;
+top:40%;
+opacity:0.80;
+background-color:grey;
+visibility:hidden;
+padding:10px;
+}
+
+#addRunner button {
+	padding:4px;
+}
+
+#addRunner label {
+	width:80px;
+	height:20px;
+	display: inline-block;
+}
+
+#addRunnerResult {
+	color:red;
+	
+}
+
 </style>
 
 <body onload="initialize()">
@@ -45,6 +72,18 @@ padding:10px;
 
 	<button onclick="renderWP()">EXPORT</button>
 	<button onclick="clearWP()">CLEAR</button>
+	<button onclick="enableCircles()">DONE DRAWING</button>
+	
+	<br><br>
+	<label id="addRunnerResult"></label>
+</div>
+
+<div id="addRunner">
+	<h1>Add Runner</h1>
+	<label>Group Name:</label></label><input type="text" name="groupName" id="groupName"><br>
+	<label>Start Position:</label><label id="startPos"></label><br>
+	
+	<button id="doneButton" onclick="addRunner()">OK</button> <button onclick="closeRunner()">CANCEL</button>
 </div>
 
 </body>
@@ -66,6 +105,8 @@ var poly;
 var map;
 var path;
 var circleRadius = 20;
+var xmlArray = new Array();
+var clickListener;
 
 function circleChange(value){
 	circleRadius = parseInt(value.value);
@@ -166,7 +207,7 @@ function initialize() {
 				poly = new google.maps.Polyline(polyOptions);
 				poly.setMap(map);
 
-				google.maps.event.addListener(map, 'click', addLatLng);
+				clickListener = google.maps.event.addListener(map, 'click', addLatLng);
 				path = poly.getPath();
 				
 				 
@@ -215,6 +256,23 @@ function initialize() {
 				        clickable:false
 				    });
 					
+					var circleId = circleArray.length;
+					
+					
+					(function (circleId) {
+						google.maps.event.addListener(circle, 'click', function() {
+							console.log("clicked circle");
+							//when clicking on a circle a menu should appear
+							document.getElementById("addRunner").style.visibility = "visible";
+							//show lat & long
+							document.getElementById("startPos").innerHTML = this.center.lat() + " "+ this.center.lng(); 
+							//update the ok button
+							document.getElementById("doneButton").setAttribute("onclick", "addRunner("+circleId+")");
+							
+						}); 
+					  })(circleId);
+					
+					
 					circleArray.push(circle);
 					
 	            	
@@ -222,6 +280,25 @@ function initialize() {
 				}
 				
 }
+
+function enableCircles(){
+	
+	//disable click listener that adds circles
+	if (clickListener){
+		google.maps.event.removeListener(clickListener);
+		
+	}
+	
+	//enables circle click event
+	for (var i=0; i<circleArray.length; i++){
+		var options = ({
+	        clickable:true
+	    });
+		circleArray[i].setOptions(options);
+	}
+
+}
+
 
 var currentPos = null;
 
@@ -251,6 +328,82 @@ function setMarker(latitude,longitude){
 
 function setRunner(){
 	
+}
+
+function addRunner(circleId){
+	var coord = circleArray[circleId].center;
+	
+	//TODO check if ID is unique => error
+	var id = xmlArray.length;
+	var _groupName = document.getElementById("groupName").value;
+	
+	var _startPos = ({
+		Latitude: coord.lat(),
+		Longitude : coord.lng()
+	});
+	
+	var runnerObj = ({
+		id : id,
+		groupName : _groupName,
+		startLatitude : coord.lat(),
+		startLongitude : coord.lng()
+	});
+
+	xmlArray.push(runnerObj);
+	
+	//we will update each time; on sending a runner
+	updateXML();
+	
+	//close window
+	document.getElementById("addRunner").style.visibility = "visible";
+	
+	//TODO Add some feedback that runner has been added!
+	console.log("Runner has been added:"+ runnerObj);
+	
+	document.getElementById("addRunnerResult").innerHTML = "Runner "+_groupName+" has been added with id "+id;
+}
+
+function closeRunner(){
+	document.getElementById("addRunner").style.visibility = "hidden";
+}
+
+function updateXML() {
+	console.log("Updating XML file on server");
+	//First we have to make a new array containing the elements we need
+	
+	if (xmlArray.length !=0){
+	
+		var newJ = JSON.stringify(xmlArray);
+		var xhReq = createXMLHttpRequest();
+			
+		xhReq.open("POST","http://eng.studev.groept.be/thesis/a12_coptermotion/xmlGenerate.php",true);
+		
+		//encode using JSON
+		xhReq.setRequestHeader("Content-type", "application/json" );
+		xhReq.onreadystatechange = function() {
+			if (xhReq.readyState != 4 && xhReq.status != 200)  {
+				return; 
+			}
+			
+			var serverResponse = xhReq.responseText;
+			console.log("XML Generation finished finished");
+			console.log(serverResponse);
+		};
+		
+		
+		xhReq.send(newJ);
+	} else {
+		console.log("xmlArray is empty");
+	}
+}
+
+function createXMLHttpRequest() {
+	try { 
+		return new XMLHttpRequest(); 
+	} catch(e) {} try { return new ActiveXObject("Msxml2.XMLHTTP"); 
+	} catch (e) {}
+		alert("XMLHttpRequest not supported");
+	return null;
 }
 
 </script>	

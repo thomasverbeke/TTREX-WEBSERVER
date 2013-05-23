@@ -92,10 +92,10 @@ public class xmlReader {
 	            int id = attributes.getIndex(qName);
 	            groupObj = new GroupBean(id);
 	   
-	        } else if (qName.equalsIgnoreCase("GroupName")) {
-	        	 System.out.println("GroupName");
+	        } else if (qName.equalsIgnoreCase("groupName")) {
+	        	 //System.out.println("GroupName");
 	        } else if (qName.equalsIgnoreCase("startPos")) {
-	        	 System.out.println("StartPos");
+	        	 //System.out.println("StartPos");
 	        	 //double StartPos = attributes.get
 	        }
 			
@@ -113,8 +113,12 @@ public class xmlReader {
 	             groupObj.setGroupName(tmpValue);
 	         }
 	         
-	         if (qName.equalsIgnoreCase("startPos")) {	 
-	             groupObj.setGroupName(tmpValue);
+	         if (qName.equalsIgnoreCase("startLatitude")) {	 
+	             groupObj.setLatitude(Double.parseDouble(tmpValue));
+	         }
+	         
+	         if (qName.equalsIgnoreCase("startLongitude")) {	 
+	             groupObj.setLongitude(Double.parseDouble(tmpValue));
 	         }
 
 		}
